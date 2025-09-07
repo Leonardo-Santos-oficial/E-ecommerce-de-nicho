@@ -15,7 +15,7 @@
 
 # DevWear — E-commerce (Next.js 14)
 
-DevWear é um e-commerce de nicho para vestuário e acessórios dev. Foco em SEO, acessibilidade (A11y), performance e arquitetura limpa, com páginas de produto componentizadas e carrinho orientado a SOLID.
+DevWear é um e-commerce de nicho para vestuário e acessórios dev. Foco em SEO, acessibilidade (A11y), performance e arquitetura limpa, com páginas de produto componentizadas.
 
 Principais pilares:
 - SEO forte (meta + JSON-LD de Organization, SiteNavigationElement e Product)
@@ -164,4 +164,4 @@ Hospedado preferencialmente na Vercel. Configure o projeto apontando o repositó
 
 ## Licença
 
-Uso educacional/portfólio. PRD completo em `E-commerce de Nicho PRD.md`.
+Uso educacional/portfólio.
