@@ -1,6 +1,7 @@
 import Link from 'next/link'
 import Head from 'next/head'
 import { ReactNode, useEffect, useState } from 'react'
+import { useRouter } from 'next/router'
 import { useCart } from '../hooks/useCart'
 import { absoluteUrl } from '../utils/seo'
 
@@ -8,6 +9,11 @@ export default function Layout({ children }: { children: ReactNode }) {
   const { totalItems } = useCart()
   const [mounted, setMounted] = useState(false)
   useEffect(() => setMounted(true), [])
+  const router = useRouter()
+
+  const prefetchHover = (href: string) => () => {
+    router.prefetch(href, undefined, { priority: true }).catch(() => {})
+  }
 
   const [mobileOpen, setMobileOpen] = useState(false)
 
@@ -66,25 +72,25 @@ export default function Layout({ children }: { children: ReactNode }) {
               >
                 <span className="i-[hamburger]">{mobileOpen ? '✕' : '☰'}</span>
               </button>
-              <Link href="/" className="text-xl font-semibold tracking-tight">DevWear</Link>
+              <Link href="/" className="text-xl font-semibold tracking-tight" onMouseEnter={prefetchHover('/')} onFocus={prefetchHover('/')}>DevWear</Link>
             </div>
             <nav aria-label="Primária" className="hidden md:flex items-center gap-4">
               {navItems.map(item => (
-                <Link key={item.href} href={item.href} className="hover:text-cyan-400">{item.label}</Link>
+                <Link key={item.href} href={item.href} className="hover:text-cyan-400" onMouseEnter={prefetchHover(item.href)} onFocus={prefetchHover(item.href)}>{item.label}</Link>
               ))}
             </nav>
             <div className="flex items-center gap-2">
-              <Link href="/login" className="btn btn-secondary hidden sm:inline-flex">Entrar</Link>
-              <Link href="/cart" className="btn btn-outline">Carrinho ({mounted ? totalItems : 0})</Link>
+              <Link href="/login" className="btn btn-secondary hidden sm:inline-flex" onMouseEnter={prefetchHover('/login')} onFocus={prefetchHover('/login')}>Entrar</Link>
+              <Link href="/cart" className="btn btn-outline" onMouseEnter={prefetchHover('/cart')} onFocus={prefetchHover('/cart')}>Carrinho ({mounted ? totalItems : 0})</Link>
             </div>
           </div>
           {mobileOpen && (
             <nav aria-label="Menu móvel" className="md:hidden border-t border-slate-800 bg-slate-950/95">
               <div className="container py-3 flex flex-col gap-2">
                 {navItems.map(item => (
-                  <Link key={item.href} href={item.href} className="py-2 hover:text-cyan-400" onClick={() => setMobileOpen(false)}>{item.label}</Link>
+                  <Link key={item.href} href={item.href} className="py-2 hover:text-cyan-400" onMouseEnter={prefetchHover(item.href)} onFocus={prefetchHover(item.href)} onClick={() => setMobileOpen(false)}>{item.label}</Link>
                 ))}
-                <Link href="/login" className="btn btn-secondary" onClick={() => setMobileOpen(false)}>Entrar</Link>
+                <Link href="/login" className="btn btn-secondary" onMouseEnter={prefetchHover('/login')} onFocus={prefetchHover('/login')} onClick={() => setMobileOpen(false)}>Entrar</Link>
               </div>
             </nav>
           )}
