@@ -17,6 +17,8 @@
 
 DevWear é um e-commerce de nicho para vestuário e acessórios dev. Foco em SEO, acessibilidade (A11y), performance e arquitetura limpa, com páginas de produto componentizadas.
 
+➡️ Link do executável (preview): https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/
+
 Principais pilares:
 - SEO forte (meta + JSON-LD de Organization, SiteNavigationElement e Product)
 - Acessibilidade: rotas, formulários com aria-live, foco visível, skip link
