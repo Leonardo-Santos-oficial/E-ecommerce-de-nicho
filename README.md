@@ -4,10 +4,10 @@
 
 <br />
 
-<a href="https://devwear.vercel.app" target="_blank">
+<a href="https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/" target="_blank">
 	<img alt="Vercel" src="https://img.shields.io/badge/preview-Vercel-black?logo=vercel" />
 </a>
-<a href="https://devwear.vercel.app" target="_blank">
+<a href="https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/" target="_blank">
 	<img alt="Demo" src="https://img.shields.io/badge/demo-live-success?logo=google-chrome" />
 </a>
 
@@ -160,7 +160,7 @@ Cobertura atual:
 
 Hospedado preferencialmente na Vercel. Configure o projeto apontando o repositório e defina `NEXT_PUBLIC_SITE_URL` no ambiente de produção.
 
-- Preview: https://devwear.vercel.app (substitua pela sua URL real)
+- Preview: https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/
 
 ## Licença
 

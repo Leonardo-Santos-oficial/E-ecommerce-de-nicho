@@ -22,7 +22,7 @@
     <text x="70" y="180" font-size="72" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#e2e8f0" font-weight="800">DevWear</text>
     <text x="70" y="230" font-size="28" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#94a3b8">E-commerce Next.js • SEO • A11y • Clean Architecture</text>
     <rect x="70" y="260" rx="10" ry="10" width="410" height="54" fill="#0f172a" stroke="#1f2937"/>
-    <text x="90" y="295" font-size="20" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#cbd5e1">Demo: https://devwear.vercel.app</text>
+  <text x="90" y="295" font-size="20" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#cbd5e1">Demo: https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/</text>
   </g>
   <filter id="f1" x="0" y="0" width="1200" height="420">
     <feGaussianBlur stdDeviation="60"/>
