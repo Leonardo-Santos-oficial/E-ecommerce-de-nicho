@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1024" height="768" viewBox="0 0 1024 768" fill="none">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#0b1221"/>
+      <stop offset="100%" stop-color="#111827"/>
+    </linearGradient>
+  </defs>
+  <rect width="1024" height="768" fill="url(#bg)"/>
+  <g>
+    <rect x="172" y="140" rx="24" width="680" height="488" fill="#1f2937" stroke="#334155" stroke-width="4"/>
+    <path d="M256 224c0-44 36-80 80-80h56l32 24h200l32-24h56c44 0 80 36 80 80v280c0 22-18 40-40 40H296c-44 0-80-36-80-80V224z" fill="#0ea5e9" fill-opacity="0.12" stroke="#0ea5e9" stroke-opacity="0.35" stroke-width="3"/>
+    <text x="50%" y="52%" dominant-baseline="middle" text-anchor="middle" fill="#e5e7eb" font-size="42" font-family="Inter, Segoe UI, Roboto, Arial, sans-serif">T‑shirt JavaScript</text>
+    <text x="50%" y="60%" dominant-baseline="middle" text-anchor="middle" fill="#a7b2cc" font-size="20" font-family="Inter, Segoe UI, Roboto, Arial, sans-serif">Ilustração genérica para portfolio</text>
+  </g>
+</svg>

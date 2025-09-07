@@ -1,0 +1,97 @@
+[
+  {
+    "id": "tee-js",
+    "slug": "camiseta-javascript",
+    "name": "Camiseta JavaScript",
+  "description": "Camiseta estilosa com logo JavaScript. 100% algodão penteado.",
+  "price": 89.9,
+    "image": "/images/camisa javascpit.svg",
+    "images": [
+      "/images/camisa javascpit.svg",
+      "/images/tshirt-javascript.svg"
+    ],
+  "imageAlt": "Camiseta JavaScript preta de algodão com estampa JS amarela",
+  "category": "camisetas"
+  },
+  {
+    "id": "tee-ts",
+    "slug": "camiseta-typescript",
+    "name": "Camiseta TypeScript",
+    "description": "Para quem tipa até o café. Modelagem unissex.",
+    "price": 99.9,
+  "image": "/placeholder.svg",
+    "category": "camisetas"
+  },
+  {
+    "id": "mug-code",
+    "slug": "caneca-code",
+    "name": "Caneca Code",
+    "description": "Caneca 350ml com estampa de código. Acompanha badge",
+    "price": 49.9,
+  "image": "/placeholder.svg",
+    "category": "acessorios"
+  },
+  {
+    "id": "hoodie-dev",
+    "slug": "moletom-dev",
+    "name": "Moletom Dev",
+    "description": "Moletom quentinho para deploys noturnos.",
+    "price": 199.9,
+  "image": "/placeholder.svg",
+    "category": "moletons"
+  },
+  {
+    "id": "sticker-bug",
+    "slug": "adesivo-bug",
+    "name": "Adesivo Bug Hunter",
+    "description": "Sticker para notebook dos caçadores de bugs.",
+    "price": 9.9,
+  "image": "/placeholder.svg",
+    "category": "adesivos"
+  },
+  {
+    "id": "cap-dev",
+    "slug": "bone-dev",
+    "name": "Boné Dev",
+    "description": "Boné trucker para dias de sol no standup.",
+    "price": 79.9,
+  "image": "/placeholder.svg",
+    "category": "acessorios"
+  },
+  {
+    "id": "tee-react",
+    "slug": "camiseta-react",
+    "name": "Camiseta React",
+    "description": "Estampa do átomo para renderizações declarativas.",
+    "price": 94.9,
+  "image": "/placeholder.svg",
+    "category": "camisetas"
+  },
+  {
+    "id": "tee-node",
+    "slug": "camiseta-node",
+    "name": "Camiseta Node.js",
+    "description": "Green vibes para quem vive no event loop.",
+    "price": 92.0,
+  "image": "/placeholder.svg",
+    "category": "camisetas"
+  },
+  {
+    "id": "socks-binary",
+    "slug": "meia-binaria",
+    "name": "Meias Binárias",
+    "description": "Par de meias 0b110010 divertidas.",
+    "price": 39.9,
+  "image": "/placeholder.svg",
+    "category": "acessorios"
+  },
+  {
+    "id": "poster-arch",
+    "slug": "poster-arquitetura",
+    "name": "Pôster Arquitetura",
+    "description": "Diagrama arquitetural minimalista para home office.",
+    "price": 59.9,
+  "image": "/placeholder.svg",
+    "category": "decoracao"
+  }
+]

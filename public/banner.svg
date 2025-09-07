@@ -1,0 +1,30 @@
+<svg width="1200" height="420" viewBox="0 0 1200 420" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="1200" y2="420" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0ea5e9"/>
+      <stop offset="1" stop-color="#22c55e"/>
+    </linearGradient>
+    <linearGradient id="grid" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#ffffff10"/>
+      <stop offset="1" stop-color="#ffffff05"/>
+    </linearGradient>
+    <pattern id="p" width="40" height="40" patternUnits="userSpaceOnUse">
+      <path d="M40 0H0V40" stroke="url(#grid)" stroke-width="1"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="420" fill="#0b1220"/>
+  <rect width="1200" height="420" fill="url(#p)"/>
+  <g filter="url(#f1)">
+    <circle cx="220" cy="120" r="180" fill="#0ea5e930"/>
+    <circle cx="980" cy="300" r="200" fill="#22c55e30"/>
+  </g>
+  <g>
+    <text x="70" y="180" font-size="72" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#e2e8f0" font-weight="800">DevWear</text>
+    <text x="70" y="230" font-size="28" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#94a3b8">E-commerce Next.js • SEO • A11y • Clean Architecture</text>
+    <rect x="70" y="260" rx="10" ry="10" width="410" height="54" fill="#0f172a" stroke="#1f2937"/>
+    <text x="90" y="295" font-size="20" font-family="Segoe UI, Roboto, Inter, Arial, sans-serif" fill="#cbd5e1">Demo: https://devwear.vercel.app</text>
+  </g>
+  <filter id="f1" x="0" y="0" width="1200" height="420">
+    <feGaussianBlur stdDeviation="60"/>
+  </filter>
+</svg>
