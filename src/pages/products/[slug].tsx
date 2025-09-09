@@ -65,7 +65,16 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
   )
 
   const fbtSuggestions = useMemo(
-    () => related.slice(0, 2).map((p) => ({ id: p.id, name: p.name, price: p.price, formattedPrice: p.formattedPrice, image: p.image })),
+    () =>
+      related
+        .slice(0, 2)
+        .map((p) => ({
+          id: p.id,
+          name: p.name,
+          price: p.price,
+          formattedPrice: p.formattedPrice,
+          image: p.image,
+        })),
     [related]
   )
 
@@ -81,7 +90,7 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
         <meta property="og:title" content={`${product.name} | DevWear`} />
         <meta property="og:description" content={product.shortDescription} />
         <meta property="og:url" content={absoluteUrl(`/products/${product.slug}`)} />
-  <meta property="og:image" content={absoluteUrl(product.imageUrl || '/placeholder.svg')} />
+        <meta property="og:image" content={absoluteUrl(product.imageUrl || '/placeholder.svg')} />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content={`${product.name} | DevWear`} />
         <meta name="twitter:description" content={product.shortDescription} />
@@ -94,7 +103,10 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
               '@context': 'https://schema.org',
               '@type': 'Product',
               name: product.name,
-              image: (product.images && product.images.length ? product.images : [product.imageUrl || '/placeholder.svg']).map((u) => absoluteUrl(u)),
+              image: (product.images && product.images.length
+                ? product.images
+                : [product.imageUrl || '/placeholder.svg']
+              ).map((u) => absoluteUrl(u)),
               description: product.description,
               sku: product.sku,
               brand: { '@type': 'Brand', name: product.brand.name },
@@ -116,7 +128,13 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
       </Head>
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
         {/* Left = Gallery */}
-        <ProductGallery images={product.images && product.images.length ? product.images : [product.imageUrl]} alt={product.imageAlt || `Imagem do produto ${product.name} - ${product.category} da marca ${product.brand.name}`} />
+        <ProductGallery
+          images={product.images && product.images.length ? product.images : [product.imageUrl]}
+          alt={
+            product.imageAlt ||
+            `Imagem do produto ${product.name} - ${product.category} da marca ${product.brand.name}`
+          }
+        />
 
         {/* Right = Info + Actions */}
         <div className="space-y-6">
@@ -127,11 +145,18 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
             shortDescription={product.shortDescription}
           />
           <ProductActions
-            onBuyNow={(qty) => { addItem({ ...cartProduct, quantity: qty } as any); router.push('/checkout') }}
-            onAddToCart={(qty) => { for (let i = 0; i < qty; i++) addItem(cartProduct) }}
+            onBuyNow={(qty) => {
+              addItem({ ...cartProduct, quantity: qty } as any)
+              router.push('/checkout')
+            }}
+            onAddToCart={(qty) => {
+              for (let i = 0; i < qty; i++) addItem(cartProduct)
+            }}
           />
           <div>
-            <Link href="/products" className="text-slate-400 hover:text-cyan-400 text-sm">Voltar para produtos</Link>
+            <Link href="/products" className="text-white hover:text-cyan-400 text-sm">
+              Voltar para produtos
+            </Link>
           </div>
         </div>
       </article>
@@ -145,12 +170,25 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
         technical={
           <div>
             <h2 className="sr-only">Informações Técnicas</h2>
-            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-slate-300">
-              <li><span className="text-slate-400">Categoria:</span> {product.category}</li>
-              <li><span className="text-slate-400">Marca:</span> {product.brand.name}</li>
-              <li><span className="text-slate-400">SKU:</span> {product.sku}</li>
-              <li><span className="text-slate-400">Disponibilidade:</span> {product.availability === 'https://schema.org/InStock' ? 'Em estoque' : 'Indisponível'}</li>
-              <li className="sm:col-span-2"><span className="text-slate-400">Descrição:</span> {product.description}</li>
+            <ul className="grid grid-cols-1 sm:grid-cols-2 gap-3 text-white">
+              <li>
+                <span className="text-white">Categoria:</span> {product.category}
+              </li>
+              <li>
+                <span className="text-white">Marca:</span> {product.brand.name}
+              </li>
+              <li>
+                <span className="text-white">SKU:</span> {product.sku}
+              </li>
+              <li>
+                <span className="text-white">Disponibilidade:</span>{' '}
+                {product.availability === 'https://schema.org/InStock'
+                  ? 'Em estoque'
+                  : 'Indisponível'}
+              </li>
+              <li className="sm:col-span-2">
+                <span className="text-white">Descrição:</span> {product.description}
+              </li>
             </ul>
           </div>
         }
@@ -158,11 +196,17 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
       />
 
       <FrequentlyBoughtTogether
-        current={{ id: product.sku, name: product.name, price: product.price, formattedPrice, image: product.imageUrl }}
+        current={{
+          id: product.sku,
+          name: product.name,
+          price: product.price,
+          formattedPrice,
+          image: product.imageUrl,
+        }}
         suggestions={fbtSuggestions}
       />
 
-  <RelatedProducts products={related} onAdd={(p) => addItem(p)} />
+      <RelatedProducts products={related} onAdd={(p) => addItem(p)} />
     </Layout>
   )
 }
@@ -173,7 +217,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
   const products = JSON.parse(raw) as Array<any>
 
   return {
-    paths: products.map(p => ({ params: { slug: p.slug } })),
+    paths: products.map((p) => ({ params: { slug: p.slug } })),
     fallback: 'blocking',
   }
 }
@@ -203,15 +247,17 @@ export const getStaticProps: GetStaticProps<ProductPageProps> = async ({ params 
     shortDescription: toShort(rawProduct.description),
     description: rawProduct.description,
     price: Number(rawProduct.price) || 0,
-  imageUrl: rawProduct.image || rawProduct.imageUrl || '/placeholder.svg',
-  imageAlt: rawProduct.imageAlt ?? null,
-    images: Array.isArray(rawProduct.images) && rawProduct.images.length
-      ? rawProduct.images
-      : [rawProduct.image || rawProduct.imageUrl || '/placeholder.svg'],
+    imageUrl: rawProduct.image || rawProduct.imageUrl || '/placeholder.svg',
+    imageAlt: rawProduct.imageAlt ?? null,
+    images:
+      Array.isArray(rawProduct.images) && rawProduct.images.length
+        ? rawProduct.images
+        : [rawProduct.image || rawProduct.imageUrl || '/placeholder.svg'],
     category: rawProduct.category || 'geral',
     brand: { name: rawProduct.brand?.name || 'DevWear' },
     sku: rawProduct.sku || rawProduct.id || rawProduct.slug,
-    availability: (rawProduct.availability as SEOProduct['availability']) || 'https://schema.org/InStock',
+    availability:
+      (rawProduct.availability as SEOProduct['availability']) || 'https://schema.org/InStock',
     rating: {
       value: rawProduct.rating?.value || 4.8,
       count: rawProduct.rating?.count || 24,

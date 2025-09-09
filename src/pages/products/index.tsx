@@ -15,10 +15,16 @@ export default function ProductsPage({ products }: { products: Product[] }) {
   const [category, setCategory] = useState<string>('all')
   const [maxPrice, setMaxPrice] = useState<number>(0)
 
-  const categories = useMemo(() => ['all', ...Array.from(new Set(products.map(p => p.category)))], [products])
-  const computedMax = useMemo(() => Math.ceil(Math.max(...products.map(p => p.price))), [products])
+  const categories = useMemo(
+    () => ['all', ...Array.from(new Set(products.map((p) => p.category)))],
+    [products]
+  )
+  const computedMax = useMemo(
+    () => Math.ceil(Math.max(...products.map((p) => p.price))),
+    [products]
+  )
   const filtered = useMemo(() => {
-    return products.filter(p => {
+    return products.filter((p) => {
       const byCat = category === 'all' || p.category === category
       const byPrice = maxPrice === 0 || p.price <= maxPrice
       return byCat && byPrice
@@ -32,17 +38,17 @@ export default function ProductsPage({ products }: { products: Product[] }) {
         <meta name="description" content="Catálogo completo de produtos DevWear." />
         <link rel="canonical" href={absoluteUrl('/products')} />
       </Head>
-      <h1 className="text-2xl font-semibold mb-6">Produtos</h1>
+      <h1 className="mb-6">Produtos</h1>
 
       <div className="card p-4 mb-6 flex flex-col md:flex-row gap-4 md:items-end">
         <div>
-          <label className="block text-sm text-slate-400 mb-1">Categoria</label>
+          <label className="block text-sm text-white mb-1">Categoria</label>
           <select
             className="bg-slate-900 border border-slate-700 rounded px-3 py-2"
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={(e) => setCategory(e.target.value)}
           >
-            {categories.map(c => (
+            {categories.map((c) => (
               <option key={c} value={c}>
                 {c === 'all' ? 'Todas' : c}
               </option>
@@ -50,20 +56,30 @@ export default function ProductsPage({ products }: { products: Product[] }) {
           </select>
         </div>
         <div className="md:ml-4">
-          <label className="block text-sm text-slate-400 mb-1">Preço máximo {maxPrice > 0 ? `(${maxPrice.toFixed(0)})` : ''}</label>
+          <label className="block text-sm text-white mb-1">
+            Preço máximo {maxPrice > 0 ? `(${maxPrice.toFixed(0)})` : ''}
+          </label>
           <input
             type="range"
             min={0}
             max={computedMax}
             step={10}
             value={maxPrice}
-            onChange={e => setMaxPrice(Number(e.target.value))}
+            onChange={(e) => setMaxPrice(Number(e.target.value))}
           />
         </div>
-        <button className="btn btn-outline md:ml-auto" onClick={() => { setCategory('all'); setMaxPrice(0) }}>Limpar filtros</button>
+        <button
+          className="btn btn-outline md:ml-auto"
+          onClick={() => {
+            setCategory('all')
+            setMaxPrice(0)
+          }}
+        >
+          Limpar filtros
+        </button>
       </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {filtered.map(p => (
+        {filtered.map((p) => (
           <ProductCard key={p.id} product={p} onAdd={addItem} />
         ))}
       </div>
@@ -74,7 +90,7 @@ export default function ProductsPage({ products }: { products: Product[] }) {
 export const getStaticProps: GetStaticProps = async () => {
   const dataFile = path.join(process.cwd(), 'data', 'products.json')
   const raw = fs.readFileSync(dataFile, 'utf-8')
-  const products = (JSON.parse(raw) as Product[]).map(p => ({
+  const products = (JSON.parse(raw) as Product[]).map((p) => ({
     ...p,
     formattedPrice: formatCurrency(p.price),
   }))

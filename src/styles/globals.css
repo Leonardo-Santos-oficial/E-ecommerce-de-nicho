@@ -9,6 +9,21 @@
   --accent: #22e0ff; /* acentua um pouco mais o ciano */
 }
 
+@layer base {
+  h1 {
+    @apply text-3xl font-bold tracking-tight;
+  }
+  h2 {
+    @apply text-2xl font-semibold tracking-tight;
+  }
+  h3 {
+    @apply text-xl font-semibold;
+  }
+  p {
+    @apply text-[15px] sm:text-base leading-relaxed text-white;
+  }
+}
+
 html,
 body,
 #__next {
@@ -48,7 +63,7 @@ body {
   @apply border border-cyan-500 text-cyan-300 hover:bg-cyan-500/10;
 }
 .btn-outline {
-  @apply border border-slate-600 text-slate-200 hover:bg-slate-800;
+  @apply border border-slate-600 text-white hover:bg-slate-800;
 }
 .card {
   @apply rounded-lg border border-slate-800 bg-slate-900/50 shadow;

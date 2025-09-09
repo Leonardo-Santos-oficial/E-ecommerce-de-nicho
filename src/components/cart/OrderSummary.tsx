@@ -13,7 +13,14 @@ type Props = {
   onContinue?: () => void
 }
 
-export default function OrderSummary({ subtotal, total, totalWithDiscount, savings, onContinue, installment }: Props) {
+export default function OrderSummary({
+  subtotal,
+  total,
+  totalWithDiscount,
+  savings,
+  onContinue,
+  installment,
+}: Props) {
   return (
     <aside className="card p-4 h-max lg:sticky lg:top-20">
       <h2 className="text-lg font-semibold mb-4">Resumo do pedido</h2>
@@ -31,12 +38,14 @@ export default function OrderSummary({ subtotal, total, totalWithDiscount, savin
           <span className="font-semibold text-lime-400">{formatCurrency(totalWithDiscount)}</span>
         </div>
         {installment && installment.installments > 1 && (
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-white">
             <span>Parcelamento</span>
-            <span>{installment.installments}x de {formatCurrency(installment.amount)} sem juros</span>
+            <span>
+              {installment.installments}x de {formatCurrency(installment.amount)} sem juros
+            </span>
           </div>
         )}
-        <div className="flex items-center justify-between text-xs text-slate-400">
+        <div className="flex items-center justify-between text-xs text-white">
           <span>Você economiza</span>
           <span>{formatCurrency(savings)}</span>
         </div>
@@ -48,11 +57,17 @@ export default function OrderSummary({ subtotal, total, totalWithDiscount, savin
       <div className="mt-4 space-y-2">
         {savings > 0 && (
           <div>
-            <span className="inline-flex rounded bg-lime-500/10 text-lime-300 px-2 py-1 text-xs">Você economiza {formatCurrency(savings)} no Pix</span>
+            <span className="inline-flex rounded bg-lime-500/10 text-lime-300 px-2 py-1 text-xs">
+              Você economiza {formatCurrency(savings)} no Pix
+            </span>
           </div>
         )}
-        <button className="btn btn-primary w-full" onClick={onContinue}>Continuar</button>
-        <Link href="/products" className="btn btn-secondary w-full text-center">Voltar para a loja</Link>
+        <button className="btn btn-primary w-full" onClick={onContinue}>
+          Continuar
+        </button>
+        <Link href="/products" className="btn btn-secondary w-full text-center">
+          Voltar para a loja
+        </Link>
       </div>
     </aside>
   )

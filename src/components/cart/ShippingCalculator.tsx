@@ -9,14 +9,16 @@ export default function ShippingCalculator() {
   const onCalculate = async () => {
     setLoading(true)
     // Placeholder: integrate with shipping API later
-    await new Promise(r => setTimeout(r, 500))
+    await new Promise((r) => setTimeout(r, 500))
     setResult('Entrega padrão: R$ 19,90 — 5 a 9 dias úteis (simulado)')
     setLoading(false)
   }
 
   return (
     <div className="space-y-2">
-      <label htmlFor="zip" className="text-sm">Calcular frete</label>
+      <label htmlFor="zip" className="text-sm">
+        Calcular frete
+      </label>
       <div className="flex gap-2">
         <input
           id="zip"
@@ -24,7 +26,7 @@ export default function ShippingCalculator() {
           placeholder="CEP"
           className="flex-1 rounded border border-slate-700 bg-slate-900 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-cyan-500"
           value={zip}
-          onChange={e => setZip(e.target.value)}
+          onChange={(e) => setZip(e.target.value)}
           aria-describedby={msgId}
         />
         <button
@@ -36,7 +38,9 @@ export default function ShippingCalculator() {
           {loading ? 'Calculando…' : 'Calcular'}
         </button>
       </div>
-      <p id={msgId} aria-live="polite" className="text-xs text-slate-400">{result}</p>
+      <p id={msgId} aria-live="polite" className="text-xs text-white">
+        {result}
+      </p>
     </div>
   )
 }

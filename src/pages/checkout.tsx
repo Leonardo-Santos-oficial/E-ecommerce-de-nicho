@@ -125,10 +125,8 @@ export default function CheckoutPage() {
           <title>Checkout | DevWear</title>
         </Head>
         <div className="max-w-xl mx-auto text-center py-20">
-          <h1 className="text-2xl font-semibold mb-4">Checkout</h1>
-          <p className="text-slate-400">
-            Seu carrinho está vazio. Adicione itens antes de continuar.
-          </p>
+          <h1 className="mb-4">Checkout</h1>
+          <p className="text-white">Seu carrinho está vazio. Adicione itens antes de continuar.</p>
         </div>
       </Layout>
     )
@@ -142,7 +140,7 @@ export default function CheckoutPage() {
       </Head>
       <div className="space-y-8">
         <div className="flex items-center justify-between flex-wrap gap-4">
-          <h1 className="text-2xl font-semibold">Checkout</h1>
+          <h1>Checkout</h1>
           {!orderPlaced && <CheckoutSteps current={step} onChange={handleStepChange} />}
         </div>
         {guardMessage && (
@@ -157,8 +155,8 @@ export default function CheckoutPage() {
 
         {orderPlaced ? (
           <div className="card p-8 max-w-xl mx-auto text-center space-y-4">
-            <h2 className="text-xl font-semibold">Pedido Confirmado ✅</h2>
-            <p className="text-slate-300 text-sm">
+            <h2>Pedido Confirmado ✅</h2>
+            <p className="text-white text-sm">
               Obrigado por comprar na DevWear. Você será redirecionado para a página inicial em
               instantes.
             </p>
@@ -212,7 +210,7 @@ export default function CheckoutPage() {
             </div>
             <aside className="h-max lg:sticky lg:top-20 card p-6 space-y-4">
               <h2 className="text-lg font-semibold">Resumo</h2>
-              <ul className="space-y-1 text-sm text-slate-300">
+              <ul className="space-y-1 text-sm text-white">
                 <li className="flex justify-between">
                   <span>Itens</span>
                   <span>{cartItems.reduce((acc, i) => acc + i.quantity, 0)}</span>
@@ -238,14 +236,14 @@ export default function CheckoutPage() {
                     })}
                   </span>
                 </li>
-                <li className="flex justify-between text-xs text-slate-400">
+                <li className="flex justify-between text-xs text-white">
                   <span>Economia</span>
                   <span>
                     {savings.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </span>
                 </li>
               </ul>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-white">
                 Frete e descontos de cupom serão aplicados após cálculo.
               </p>
             </aside>

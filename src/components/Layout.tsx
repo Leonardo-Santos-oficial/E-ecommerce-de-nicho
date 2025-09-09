@@ -174,18 +174,18 @@ export default function Layout({ children }: { children: ReactNode }) {
       <footer className="border-t border-slate-800 py-10 mt-8 text-sm">
         <div className="container grid gap-8 md:grid-cols-4">
           <section>
-            <h2 className="font-semibold text-slate-200 mb-2">Atendimento</h2>
-            <p className="text-slate-400">
+            <h2 className="font-semibold text-white mb-2">Atendimento</h2>
+            <p className="text-white">
               08:00 às 20:00 - Segunda a Sexta;
               <br />
               09:00 às 15:00 - Sábado (exceto Dom. e feriados)
             </p>
-            <h3 className="font-medium text-slate-300 mt-4">Fale conosco</h3>
-            <p className="text-slate-400">Chat • contato@devwear.com</p>
+            <h3 className="font-medium text-white mt-4">Fale conosco</h3>
+            <p className="text-white">Chat • contato@devwear.com</p>
           </section>
           <section>
-            <h2 className="font-semibold text-slate-200 mb-2">Institucional</h2>
-            <ul className="space-y-1 text-slate-400">
+            <h2 className="font-semibold text-white mb-2">Institucional</h2>
+            <ul className="space-y-1 text-white">
               <li>
                 <Link href="/sobre" className="hover:text-cyan-400">
                   Sobre a DevWear
@@ -219,8 +219,8 @@ export default function Layout({ children }: { children: ReactNode }) {
             </ul>
           </section>
           <section>
-            <h2 className="font-semibold text-slate-200 mb-2">Políticas</h2>
-            <ul className="space-y-1 text-slate-400">
+            <h2 className="font-semibold text-white mb-2">Políticas</h2>
+            <ul className="space-y-1 text-white">
               <li>
                 <Link href="/politicas/cookies" className="hover:text-cyan-400">
                   Políticas de Cookies
@@ -244,7 +244,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             </ul>
           </section>
           <section>
-            <h2 className="font-semibold text-slate-200 mb-2">Apps & Redes</h2>
+            <h2 className="font-semibold text-white mb-2">Apps & Redes</h2>
             <div className="space-y-2">
               <div className="flex gap-2">
                 <Link href="#" className="btn btn-outline">
@@ -254,7 +254,7 @@ export default function Layout({ children }: { children: ReactNode }) {
                   Google Play
                 </Link>
               </div>
-              <div className="flex gap-3 text-slate-400">
+              <div className="flex gap-3 text-white">
                 <Link href="https://www.instagram.com/devwear" className="hover:text-cyan-400">
                   Instagram
                 </Link>
@@ -268,11 +268,11 @@ export default function Layout({ children }: { children: ReactNode }) {
             </div>
           </section>
         </div>
-        <div className="container mt-8 text-slate-500">
+        <div className="container mt-8 text-white">
           Rua Carlos Gomes, 1321 - Centro, Limeira / SP - CEP: 13480-010 | DevWear® é uma marca
           fictícia para portfolio. Este site usa criptografia SSL. Imagens ilustrativas.
         </div>
-        <div className="container mt-2 text-slate-600">
+        <div className="container mt-2 text-white">
           © {new Date().getFullYear()} DevWear. Todos os direitos reservados.
         </div>
       </footer>

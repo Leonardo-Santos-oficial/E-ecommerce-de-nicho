@@ -14,17 +14,19 @@ export default function ProductDetailsTabs({ technical, reviews }: Props) {
     <section className="mt-10">
       <div className="border-b border-slate-800 flex gap-4">
         <button
-          className={`py-2 border-b-2 ${active === 'tech' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400'}`}
+          className={`py-2 border-b-2 ${active === 'tech' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-white'}`}
           onClick={() => setActive('tech')}
-        >Informações Técnicas</button>
+        >
+          Informações Técnicas
+        </button>
         <button
-          className={`py-2 border-b-2 ${active === 'reviews' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-slate-400'}`}
+          className={`py-2 border-b-2 ${active === 'reviews' ? 'border-cyan-400 text-cyan-400' : 'border-transparent text-white'}`}
           onClick={() => setActive('reviews')}
-        >Avaliações</button>
+        >
+          Avaliações
+        </button>
       </div>
-      <div className="pt-4">
-        {active === 'tech' ? technical : reviews}
-      </div>
+      <div className="pt-4">{active === 'tech' ? technical : reviews}</div>
     </section>
   )
 }

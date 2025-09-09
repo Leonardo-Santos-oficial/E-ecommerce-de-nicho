@@ -13,19 +13,24 @@ export default function ProductInfo({ name, rating, price, shortDescription }: P
   return (
     <section>
       <h1 className="text-3xl font-bold mb-2 tracking-tight">{name}</h1>
-      <div className="flex items-center gap-2 text-sm text-slate-400 mb-3" aria-label={`Avaliação ${rating.value} de 5`}>
+      <div
+        className="flex items-center gap-2 text-sm text-white mb-3"
+        aria-label={`Avaliação ${rating.value} de 5`}
+      >
         <span className="flex text-yellow-400">
-          {'★'.repeat(full)}{half ? '☆' : ''}{'☆'.repeat(empty)}
+          {'★'.repeat(full)}
+          {half ? '☆' : ''}
+          {'☆'.repeat(empty)}
         </span>
-        <span>{rating.value.toFixed(1)} ({rating.count})</span>
+        <span>
+          {rating.value.toFixed(1)} ({rating.count})
+        </span>
       </div>
       <div className="flex items-baseline gap-3 mb-4">
         <span className="text-2xl text-cyan-400 font-semibold">{price.current}</span>
-        {price.original && (
-          <span className="text-slate-500 line-through">{price.original}</span>
-        )}
+        {price.original && <span className="text-white line-through">{price.original}</span>}
       </div>
-      {shortDescription && <p className="text-slate-300">{shortDescription}</p>}
+      {shortDescription && <p className="text-white">{shortDescription}</p>}
     </section>
   )
 }

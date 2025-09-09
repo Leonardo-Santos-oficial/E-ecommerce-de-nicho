@@ -6,14 +6,24 @@ import OrderSummary from '@/components/cart/OrderSummary'
 import { useRouter } from 'next/router'
 
 export default function CartPage() {
-  const { cartItems, updateQuantity, removeItem, clearCart, subtotal, total, totalWithDiscount, savings, installment } = useCart()
+  const {
+    cartItems,
+    updateQuantity,
+    removeItem,
+    clearCart,
+    subtotal,
+    total,
+    totalWithDiscount,
+    savings,
+    installment,
+  } = useCart()
   const router = useRouter()
 
   return (
     <Layout>
-      <h1 className="text-2xl font-semibold mb-4 sm:mb-6">Carrinho</h1>
+      <h1 className="mb-4 sm:mb-6">Carrinho</h1>
       {cartItems.length === 0 ? (
-        <p className="text-slate-400">Seu carrinho está vazio.</p>
+        <p className="text-white">Seu carrinho está vazio.</p>
       ) : (
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 sm:gap-6">
           <div className="lg:col-span-2 space-y-4 sm:space-y-6">
@@ -31,7 +41,9 @@ export default function CartPage() {
             totalWithDiscount={totalWithDiscount}
             savings={savings}
             installment={installment}
-            onContinue={() => { router.push('/checkout') }}
+            onContinue={() => {
+              router.push('/checkout')
+            }}
           />
         </div>
       )}

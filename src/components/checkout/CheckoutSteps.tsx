@@ -11,7 +11,7 @@ const steps: { key: CheckoutStep; label: string }[] = [
   { key: 'identificacao', label: 'Identificação' },
   { key: 'endereco', label: 'Endereço' },
   { key: 'pagamento', label: 'Pagamento' },
-  { key: 'revisao', label: 'Revisão' }
+  { key: 'revisao', label: 'Revisão' },
 ]
 
 export default function CheckoutSteps({ current, onChange }: Props) {
@@ -23,7 +23,7 @@ export default function CheckoutSteps({ current, onChange }: Props) {
           <li key={s.key} className="flex items-center gap-2">
             <button
               type="button"
-              className={`text-xs rounded-full px-3 py-1 border transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/50 ${active ? 'bg-cyan-600 border-cyan-500 text-white' : 'border-slate-700 text-slate-400 hover:text-cyan-300'}`}
+              className={`text-xs rounded-full px-3 py-1 border transition-colors focus:outline-none focus:ring-2 focus:ring-cyan-400/50 ${active ? 'bg-cyan-600 border-cyan-500 text-white' : 'border-slate-700 text-white hover:text-cyan-300'}`}
               aria-current={active ? 'step' : undefined}
               onClick={() => onChange?.(s.key)}
             >

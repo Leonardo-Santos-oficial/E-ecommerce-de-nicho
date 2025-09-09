@@ -70,7 +70,7 @@ export default function PaymentForm({ total, onPrev, onNext }: Props) {
       </h2>
       <fieldset className="flex flex-wrap gap-3" aria-label="Método de pagamento">
         <label
-          className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded border text-sm font-medium transition-colors ${method === 'pix' ? 'border-cyan-500 bg-cyan-500/10 text-cyan-200' : 'border-slate-700 text-slate-300 hover:border-slate-500'}`}
+          className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded border text-sm font-medium transition-colors ${method === 'pix' ? 'border-cyan-500 bg-cyan-500/10 text-cyan-200' : 'border-slate-700 text-white hover:border-slate-500'}`}
         >
           <input
             type="radio"
@@ -83,7 +83,7 @@ export default function PaymentForm({ total, onPrev, onNext }: Props) {
           <span>Pix (5% off)</span>
         </label>
         <label
-          className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded border text-sm font-medium transition-colors ${method === 'cartao' ? 'border-cyan-500 bg-cyan-500/10 text-cyan-200' : 'border-slate-700 text-slate-300 hover:border-slate-500'}`}
+          className={`cursor-pointer inline-flex items-center gap-2 px-4 py-2 rounded border text-sm font-medium transition-colors ${method === 'cartao' ? 'border-cyan-500 bg-cyan-500/10 text-cyan-200' : 'border-slate-700 text-white hover:border-slate-500'}`}
         >
           <input
             type="radio"
@@ -221,8 +221,8 @@ export default function PaymentForm({ total, onPrev, onNext }: Props) {
           Revisar Pedido
         </button>
       </div>
-      <p className="text-xs text-slate-400">
-        Total: <strong className="text-slate-300">{formatCurrency(total)}</strong>
+      <p className="text-xs text-white">
+        Total: <strong className="text-white">{formatCurrency(total)}</strong>
       </p>
     </form>
   )

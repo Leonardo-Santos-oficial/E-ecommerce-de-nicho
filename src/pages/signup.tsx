@@ -94,7 +94,7 @@ export default function SignupPage() {
         >
           ✕
         </button>
-        <h1 className="text-2xl font-semibold mb-6">Criar conta</h1>
+        <h1 className="mb-6">Criar conta</h1>
         <form onSubmit={onSubmit} className="space-y-4" aria-label="Formulário de cadastro">
           <div>
             <label htmlFor="name" className="block text-sm mb-1">
@@ -150,19 +150,19 @@ export default function SignupPage() {
                 />
               </div>
               <ul className="mt-2 space-y-1 text-xs">
-                <li className={passwordChecks.len ? 'text-lime-400' : 'text-slate-400'}>
+                <li className={passwordChecks.len ? 'text-lime-400' : 'text-white'}>
                   • Pelo menos 8 caracteres
                 </li>
-                <li className={passwordChecks.upper ? 'text-lime-400' : 'text-slate-400'}>
+                <li className={passwordChecks.upper ? 'text-lime-400' : 'text-white'}>
                   • Uma letra maiúscula (A–Z)
                 </li>
-                <li className={passwordChecks.lower ? 'text-lime-400' : 'text-slate-400'}>
+                <li className={passwordChecks.lower ? 'text-lime-400' : 'text-white'}>
                   • Uma letra minúscula (a–z)
                 </li>
-                <li className={passwordChecks.number ? 'text-lime-400' : 'text-slate-400'}>
+                <li className={passwordChecks.number ? 'text-lime-400' : 'text-white'}>
                   • Um número (0–9)
                 </li>
-                <li className={passwordChecks.special ? 'text-lime-400' : 'text-slate-400'}>
+                <li className={passwordChecks.special ? 'text-lime-400' : 'text-white'}>
                   • Um caractere especial (!@#$%…)
                 </li>
               </ul>
@@ -197,7 +197,7 @@ export default function SignupPage() {
               className="mt-1"
               required
             />
-            <label htmlFor="accept" className="text-sm text-slate-300">
+            <label htmlFor="accept" className="text-sm text-white">
               Li e concordo com a{' '}
               <Link
                 className="text-cyan-400 hover:underline"
@@ -226,7 +226,7 @@ export default function SignupPage() {
             {loading ? 'Criando…' : 'Criar conta'}
           </button>
         </form>
-        <p className="text-sm text-slate-400 mt-4">
+        <p className="text-sm text-white mt-4">
           Já tem conta?{' '}
           <Link className="text-cyan-400 hover:underline" href="/login">
             Entrar

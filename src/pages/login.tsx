@@ -62,7 +62,7 @@ export default function LoginPage() {
         >
           ✕
         </button>
-        <h1 className="text-2xl font-semibold mb-6">Entrar</h1>
+        <h1 className="mb-6">Entrar</h1>
         <form onSubmit={onSubmit} className="space-y-4" aria-label="Formulário de login">
           <div>
             <label htmlFor="email" className="block text-sm mb-1">
@@ -108,7 +108,7 @@ export default function LoginPage() {
           </button>
         </form>
         <div className="mt-6 space-y-3">
-          <p className="text-xs text-slate-500 text-center">ou</p>
+          <p className="text-sm text-white text-center">ou</p>
           <Link
             className="btn btn-secondary w-full text-center"
             href="/signup"
