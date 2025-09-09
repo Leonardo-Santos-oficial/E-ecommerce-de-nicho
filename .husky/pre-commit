@@ -1,4 +1,3 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
-
+# Husky v10+: remover sourcing deprecated. Executa lint-staged diretamente.
 npx --no -- lint-staged
