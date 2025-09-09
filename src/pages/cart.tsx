@@ -3,9 +3,11 @@ import { useCart } from '@/hooks/useCart'
 import CartItemsList from '@/components/cart/CartItemsList'
 import AdditionalServices from '@/components/cart/AdditionalServices'
 import OrderSummary from '@/components/cart/OrderSummary'
+import { useRouter } from 'next/router'
 
 export default function CartPage() {
   const { cartItems, updateQuantity, removeItem, clearCart, subtotal, total, totalWithDiscount, savings, installment } = useCart()
+  const router = useRouter()
 
   return (
     <Layout>
@@ -29,7 +31,7 @@ export default function CartPage() {
             totalWithDiscount={totalWithDiscount}
             savings={savings}
             installment={installment}
-            onContinue={() => {/* placeholder para navegar ao checkout */}}
+            onContinue={() => { router.push('/checkout') }}
           />
         </div>
       )}

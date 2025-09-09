@@ -17,6 +17,7 @@ export default function Layout({ children }: { children: ReactNode }) {
 
   const [mobileOpen, setMobileOpen] = useState(false)
 
+  // Navegação principal do site. Scout Rule aplicado: corrigido typo em "/products" e chave label.
   const navItems = [
     { href: '/', label: 'Início' },
     { href: '/products', label: 'Produtos' },

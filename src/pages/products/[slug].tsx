@@ -13,6 +13,7 @@ import type { Product as AppProduct } from '../../types/Product'
 import ProductGallery from '../../components/product/ProductGallery'
 import ProductInfo from '../../components/product/ProductInfo'
 import ProductActions from '../../components/product/ProductActions'
+import { useRouter } from 'next/router'
 import FrequentlyBoughtTogether from '../../components/product/FrequentlyBoughtTogether'
 import HorizontalBanner from '../../components/product/HorizontalBanner'
 import ProductDetailsTabs from '../../components/product/ProductDetailsTabs'
@@ -44,6 +45,7 @@ interface ProductPageProps {
 
 export default function ProductDetail({ product, related }: ProductPageProps) {
   const { addItem } = useCart()
+  const router = useRouter()
 
   const formattedPrice = useMemo(() => formatCurrency(product.price), [product.price])
 
@@ -125,7 +127,7 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
             shortDescription={product.shortDescription}
           />
           <ProductActions
-            onBuyNow={(qty) => { addItem({ ...cartProduct, quantity: qty } as any) /* placeholder: ir direto ao checkout depois */ }}
+            onBuyNow={(qty) => { addItem({ ...cartProduct, quantity: qty } as any); router.push('/checkout') }}
             onAddToCart={(qty) => { for (let i = 0; i < qty; i++) addItem(cartProduct) }}
           />
           <div>
