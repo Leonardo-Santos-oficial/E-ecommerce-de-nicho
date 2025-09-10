@@ -7,8 +7,33 @@ import { absoluteUrl } from '../utils/seo'
 import { Product } from '../types/Product'
 import { formatCurrency } from '../utils/format'
 import { GetStaticProps } from 'next'
+import dynamic from 'next/dynamic'
+import Section from '@/components/home/Section'
+import ProductsRow from '@/components/home/ProductsRow'
+import ProductTags from '@/components/home/ProductTags'
+import CategoryCards from '@/components/home/CategoryCards'
+import PromoBannerCards from '@/components/home/PromoBannerCards'
+import BenefitsBar from '@/components/home/BenefitsBar'
+import Countdown from '@/components/home/Countdown'
+import NewsletterSignup from '@/components/home/NewsletterSignup'
+import TrustBadges from '@/components/home/TrustBadges'
+import useRecentlyViewed from '@/hooks/useRecentlyViewed'
 
-export default function Home({ featured }: { featured: Product[] }) {
+// Lazy-load hero and brands to keep LCP light
+const HeroCarousel = dynamic(() => import('@/components/home/HeroCarousel'), { ssr: false })
+const BrandsStrip = dynamic(() => import('@/components/home/BrandsStrip'), { ssr: false })
+const BrandsGrid = dynamic(() => import('@/components/home/BrandsGrid'), { ssr: false })
+
+type HomeProps = {
+  featured: Product[]
+  bestSellers: Product[]
+  recommended: Product[]
+}
+
+export default function Home({ featured, bestSellers, recommended }: HomeProps) {
+  const pool = [...featured, ...bestSellers, ...recommended]
+  const recently = useRecentlyViewed(pool)
+  const flashEndsAt = (typeof window !== 'undefined' ? Date.now() : 0) + 4 * 60 * 60 * 1000
   return (
     <Layout>
       <Head>
@@ -25,17 +50,24 @@ export default function Home({ featured }: { featured: Product[] }) {
         />
         <meta property="og:url" content={absoluteUrl('/')} />
       </Head>
-      <section className="py-8">
-        <h1 className="mb-3">DevWear</h1>
-        <p className="mb-6">
-          Vestuário e acessórios para desenvolvedores. Aqui você encontra o que precisa
-        </p>
-        <Link href="/products" className="btn btn-primary">
-          Ver todos os produtos
-        </Link>
-      </section>
-      <section className="py-8">
-        <h2 className="text-xl font-semibold mb-4">Destaques</h2>
+      <HeroCarousel />
+      <div className="mt-6">
+        <BrandsStrip />
+      </div>
+
+      <Section title="Benefícios" subtitle="Vantagens de comprar aqui">
+        <BenefitsBar />
+      </Section>
+
+      <Section title="Explore por tags" subtitle="Navegue por temas populares">
+        <ProductTags />
+      </Section>
+
+      <Section title="Categorias" subtitle="Encontre por departamento">
+        <CategoryCards />
+      </Section>
+
+      <Section title="Destaques" subtitle="Seleção curada para você" href="/products">
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {featured.map((p) => (
             <div key={p.id} className="card p-4">
@@ -47,7 +79,60 @@ export default function Home({ featured }: { featured: Product[] }) {
             </div>
           ))}
         </div>
-      </section>
+      </Section>
+
+      <Section
+        title="Ofertas relâmpago"
+        subtitle="Aproveite antes que acabe"
+        href="/products?promo=flash"
+        right={
+          <div className="hidden md:block">
+            <Countdown endsAt={flashEndsAt} />
+          </div>
+        }
+      >
+        <div className="md:hidden mb-3">
+          <Countdown endsAt={flashEndsAt} />
+        </div>
+        <ProductsRow products={bestSellers} onAdd={() => {}} />
+      </Section>
+
+      <Section
+        title="Recomendados para você"
+        subtitle="Baseado no interesse geral"
+        href="/products"
+      >
+        <ProductsRow products={recommended} onAdd={() => {}} />
+      </Section>
+
+      {recently.length > 0 && (
+        <Section title="Vistos recentemente" subtitle="Continue de onde parou">
+          <ProductsRow products={recently.slice(0, 8)} onAdd={() => {}} />
+        </Section>
+      )}
+
+      <Section
+        title="Coleções em destaque"
+        subtitle="Acesse categorias com um clique"
+        href="/products"
+      >
+        <PromoBannerCards />
+      </Section>
+
+      <Section title="Marcas parceiras" subtitle="Tecnologias que amamos">
+        <BrandsGrid />
+      </Section>
+
+      <Section title="Fique por dentro" subtitle="Assine a newsletter e receba ofertas">
+        <div className="grid gap-4 md:grid-cols-3">
+          <div className="md:col-span-2">
+            <NewsletterSignup />
+          </div>
+          <div className="md:col-span-1">
+            <TrustBadges />
+          </div>
+        </div>
+      </Section>
     </Layout>
   )
 }
@@ -60,5 +145,12 @@ export const getStaticProps: GetStaticProps = async () => {
     .slice(0, 4)
     .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
 
-  return { props: { featured }, revalidate: 3600 }
+  const bestSellers = products
+    .slice(0, 8)
+    .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
+  const recommended = products
+    .slice(-8)
+    .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
+
+  return { props: { featured, bestSellers, recommended }, revalidate: 3600 }
 }

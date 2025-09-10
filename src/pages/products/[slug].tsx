@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'
@@ -19,6 +19,7 @@ import HorizontalBanner from '../../components/product/HorizontalBanner'
 import ProductDetailsTabs from '../../components/product/ProductDetailsTabs'
 import ReviewsTab from '../../components/product/ReviewsTab'
 import RelatedProducts from '../../components/product/RelatedProducts'
+import { recordView } from '@/hooks/useRecentlyViewed'
 
 // Local type for SEO-rich product detail page (per requirements)
 type SEOProduct = {
@@ -49,6 +50,11 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 
   const formattedPrice = useMemo(() => formatCurrency(product.price), [product.price])
 
+  // Record recently viewed for home usage
+  useEffect(() => {
+    recordView(product.slug)
+  }, [product.slug])
+
   // Map SEO product into cart product shape used by CartContext
   const cartProduct: CartProduct = useMemo(
     () => ({
@@ -66,15 +72,13 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 
   const fbtSuggestions = useMemo(
     () =>
-      related
-        .slice(0, 2)
-        .map((p) => ({
-          id: p.id,
-          name: p.name,
-          price: p.price,
-          formattedPrice: p.formattedPrice,
-          image: p.image,
-        })),
+      related.slice(0, 2).map((p) => ({
+        id: p.id,
+        name: p.name,
+        price: p.price,
+        formattedPrice: p.formattedPrice,
+        image: p.image,
+      })),
     [related]
   )
 
