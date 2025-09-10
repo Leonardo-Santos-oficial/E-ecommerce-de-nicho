@@ -1,6 +1,7 @@
 import fs from 'fs'
 import path from 'path'
 import { GetStaticProps } from 'next'
+import { RawProductsArraySchema } from '@/types/schemas'
 import Layout from '../../components/Layout'
 import { Product } from '../../types/Product'
 import { formatCurrency } from '../../utils/format'
@@ -90,9 +91,17 @@ export default function ProductsPage({ products }: { products: Product[] }) {
 export const getStaticProps: GetStaticProps = async () => {
   const dataFile = path.join(process.cwd(), 'data', 'products.json')
   const raw = fs.readFileSync(dataFile, 'utf-8')
-  const products = (JSON.parse(raw) as Product[]).map((p) => ({
-    ...p,
-    formattedPrice: formatCurrency(p.price),
+  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
+  const products = (parsed.success ? parsed.data : []).map((p) => ({
+    id: String(p.id ?? p.slug),
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    price: Number(p.price) || 0,
+    formattedPrice: formatCurrency(Number(p.price) || 0),
+    image: p.image || '/placeholder.svg',
+    ...(p.imageAlt ? { imageAlt: p.imageAlt } : {}),
+    category: p.category || 'geral',
   }))
 
   return { props: { products }, revalidate: 3600 }

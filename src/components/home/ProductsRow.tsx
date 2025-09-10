@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from 'react'
 import { Product } from '../../types/Product'
 import { ProductCard } from '@/components/ProductCard'
 
-type Props = { products: Product[]; onAdd: (p: Product) => void }
+type Props = { products: readonly Product[]; onAdd?: (p: Product) => void }
 
 export default function ProductsRow({ products, onAdd }: Props) {
   const scrollerRef = useRef<HTMLDivElement | null>(null)
@@ -57,7 +57,7 @@ export default function ProductsRow({ products, onAdd }: Props) {
         <div className="grid grid-flow-col auto-cols-[75%] sm:auto-cols-[50%] md:auto-cols-[33%] lg:auto-cols-[25%] gap-4 snap-x snap-mandatory">
           {products.map((p) => (
             <div key={p.id} className="snap-start">
-              <ProductCard product={p} onAdd={onAdd} />
+              <ProductCard product={p} onAdd={onAdd ?? (() => {})} />
             </div>
           ))}
         </div>

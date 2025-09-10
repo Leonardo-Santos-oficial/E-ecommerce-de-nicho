@@ -7,6 +7,7 @@ import { absoluteUrl } from '../utils/seo'
 import { Product } from '../types/Product'
 import { formatCurrency } from '../utils/format'
 import { GetStaticProps } from 'next'
+import { RawProductsArraySchema } from '@/types/schemas'
 import dynamic from 'next/dynamic'
 import Section from '@/components/home/Section'
 import ProductsRow from '@/components/home/ProductsRow'
@@ -140,7 +141,18 @@ export default function Home({ featured, bestSellers, recommended }: HomeProps) 
 export const getStaticProps: GetStaticProps = async () => {
   const dataFile = path.join(process.cwd(), 'data', 'products.json')
   const raw = fs.readFileSync(dataFile, 'utf-8')
-  const products = JSON.parse(raw) as Product[]
+  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
+  const products = (parsed.success ? parsed.data : []).map((p) => ({
+    id: String(p.id ?? p.slug),
+    slug: p.slug,
+    name: p.name,
+    description: p.description,
+    price: Number(p.price) || 0,
+    formattedPrice: formatCurrency(Number(p.price) || 0),
+    image: p.image || '/placeholder.svg',
+    ...(p.imageAlt ? { imageAlt: p.imageAlt } : {}),
+    category: p.category || 'geral',
+  }))
   const featured = products
     .slice(0, 4)
     .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))

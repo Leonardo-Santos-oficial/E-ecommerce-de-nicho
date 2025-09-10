@@ -1,31 +1,40 @@
 import React, { useState, useRef, useEffect } from 'react'
+import type { PaymentMethod } from '@/types/domain'
+import type { MoneyBRL } from '@/types/brands'
 import { inputBase } from '@/components/form/styles'
-import { maskCardNumber, maskExpiry, maskCVV } from '@/utils/masks'
+import {
+  maskCardNumber,
+  maskExpiry,
+  maskCVV,
+  validateCardLuhn,
+  validateExpiryNotPast,
+} from '@/utils/masks'
+import { CardSchema } from '@/types/schemas'
 import { formatCurrency } from '@/utils/format'
 import { handleDigitKeyDown, handlePasteDigits, sanitizeDigits } from '@/utils/inputGuards'
 
 interface Props {
-  total: number
+  total: MoneyBRL | number
   onPrev: () => void
-  onNext: (method: string) => void
+  onNext: (method: PaymentMethod) => void
 }
 
 export default function PaymentForm({ total, onPrev, onNext }: Props) {
-  const [method, setMethod] = useState<'pix' | 'cartao'>('pix')
+  const [method, setMethod] = useState<PaymentMethod>('pix')
   const [card, setCard] = useState({ numero: '', nome: '', validade: '', cvv: '' })
   const [touched, setTouched] = useState<Record<string, boolean>>({})
   const isCard = method === 'cartao'
   const cardOk =
     !isCard ||
-    (card.numero.replace(/\D/g, '').length >= 13 &&
-      card.nome &&
-      /^(0[1-9]|1[0-2])\/\d{2}$/.test(card.validade) &&
+    (validateCardLuhn(card.numero) &&
+      !!card.nome &&
+      validateExpiryNotPast(card.validade) &&
       card.cvv.replace(/\D/g, '').length >= 3)
   const errors = isCard
     ? {
-        numero: card.numero.replace(/\D/g, '').length < 13 ? 'Número inválido' : '',
+        numero: !validateCardLuhn(card.numero) ? 'Número inválido' : '',
         nome: !card.nome ? 'Obrigatório' : '',
-        validade: !/^(0[1-9]|1[0-2])\/\d{2}$/.test(card.validade) ? 'MM/AA' : '',
+        validade: !validateExpiryNotPast(card.validade) ? 'MM/AA' : '',
         cvv: card.cvv.replace(/\D/g, '').length < 3 ? 'CVV' : '',
       }
     : {}
@@ -62,6 +71,10 @@ export default function PaymentForm({ total, onPrev, onNext }: Props) {
       className="card p-4 space-y-6"
       onSubmit={(e) => {
         e.preventDefault()
+        if (isCard) {
+          const parsed = CardSchema.safeParse(card)
+          if (!parsed.success) return
+        }
         if (cardOk) onNext(method)
       }}
     >

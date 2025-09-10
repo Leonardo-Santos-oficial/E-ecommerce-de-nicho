@@ -5,6 +5,7 @@ import { absoluteUrl } from '../../utils/seo'
 import fs from 'fs'
 import path from 'path'
 import { GetStaticPaths, GetStaticProps } from 'next'
+import { RawProductsArraySchema } from '@/types/schemas'
 import Layout from '../../components/Layout'
 import { formatCurrency } from '../../utils/format'
 import { useCart } from '../../hooks/useCart'
@@ -218,7 +219,8 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 export const getStaticPaths: GetStaticPaths = async () => {
   const dataFile = path.join(process.cwd(), 'data', 'products.json')
   const raw = fs.readFileSync(dataFile, 'utf-8')
-  const products = JSON.parse(raw) as Array<any>
+  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
+  const products = parsed.success ? parsed.data : []
 
   return {
     paths: products.map((p) => ({ params: { slug: p.slug } })),
@@ -230,7 +232,8 @@ export const getStaticProps: GetStaticProps<ProductPageProps> = async ({ params 
   const slug = params?.slug as string
   const dataFile = path.join(process.cwd(), 'data', 'products.json')
   const raw = fs.readFileSync(dataFile, 'utf-8')
-  const rawProducts = JSON.parse(raw) as Array<any>
+  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
+  const rawProducts = parsed.success ? parsed.data : []
 
   const index = rawProducts.findIndex((p) => p.slug === slug)
   const rawProduct = index >= 0 ? rawProducts[index] : null
@@ -251,20 +254,19 @@ export const getStaticProps: GetStaticProps<ProductPageProps> = async ({ params 
     shortDescription: toShort(rawProduct.description),
     description: rawProduct.description,
     price: Number(rawProduct.price) || 0,
-    imageUrl: rawProduct.image || rawProduct.imageUrl || '/placeholder.svg',
+    imageUrl: rawProduct.image || '/placeholder.svg',
     imageAlt: rawProduct.imageAlt ?? null,
     images:
       Array.isArray(rawProduct.images) && rawProduct.images.length
         ? rawProduct.images
-        : [rawProduct.image || rawProduct.imageUrl || '/placeholder.svg'],
+        : [rawProduct.image || '/placeholder.svg'],
     category: rawProduct.category || 'geral',
-    brand: { name: rawProduct.brand?.name || 'DevWear' },
-    sku: rawProduct.sku || rawProduct.id || rawProduct.slug,
-    availability:
-      (rawProduct.availability as SEOProduct['availability']) || 'https://schema.org/InStock',
+    brand: { name: 'DevWear' },
+    sku: (rawProduct as any).sku || rawProduct.id || rawProduct.slug,
+    availability: 'https://schema.org/InStock',
     rating: {
-      value: rawProduct.rating?.value || 4.8,
-      count: rawProduct.rating?.count || 24,
+      value: 4.8,
+      count: 24,
     },
   }
 

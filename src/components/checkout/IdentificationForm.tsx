@@ -1,27 +1,24 @@
 import React, { useState, useId, useRef } from 'react'
 import { inputBase } from '@/components/form/styles'
 import { maskCPF, validateCPF, validateEmail } from '@/utils/masks'
+import { IdentificationSchema, type IdentificationDTO } from '@/types/schemas'
 import { handleDigitKeyDown, handlePasteDigits } from '@/utils/inputGuards'
 
 interface Props {
-  value: { nome: string; email: string; cpf: string }
-  onChange: (value: Props['value']) => void
+  value: IdentificationDTO
+  onChange: (value: IdentificationDTO) => void
   onNext: () => void
 }
 
 export default function IdentificationForm({ value, onChange, onNext }: Props) {
   const update = (patch: Partial<Props['value']>) => onChange({ ...value, ...patch })
   const [touched, setTouched] = useState<{ nome?: boolean; email?: boolean; cpf?: boolean }>({})
+  const parsed = IdentificationSchema.safeParse(value)
+  const issues = parsed.success ? [] : parsed.error.issues
   const errors = {
-    nome: value.nome.trim().length < 3 ? 'Informe nome completo' : '',
-    email:
-      value.email && !validateEmail(value.email)
-        ? 'Email inválido'
-        : !value.email
-          ? 'Email obrigatório'
-          : '',
-    cpf:
-      value.cpf && !validateCPF(value.cpf) ? 'CPF inválido' : !value.cpf ? 'CPF obrigatório' : '',
+    nome: issues.find((i) => i.path[0] === 'nome')?.message || '',
+    email: issues.find((i) => i.path[0] === 'email')?.message || '',
+    cpf: issues.find((i) => i.path[0] === 'cpf')?.message || '',
   }
   const ready = Object.values(errors).every((e) => e === '')
   const descId = useId()

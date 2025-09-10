@@ -8,15 +8,21 @@ import ReviewOrder from '@/components/checkout/ReviewOrder'
 import { useCart } from '@/hooks/useCart'
 import Head from 'next/head'
 import { useRouter } from 'next/router'
-import { validateCPF, validateEmail, validateCEP } from '@/utils/masks'
+import type { PaymentMethod, Identification, Address, OrderTotals } from '@/types/domain'
+import { IdentificationSchema, AddressSchema, PaymentMethodSchema } from '@/types/schemas'
+import { toDomainIdentification, toDomainAddress } from '@/types/mappers'
 
 // Mantém dados do fluxo de checkout em um único componente page-level para simplicidade (Single Responsibility: orquestrar o fluxo)
 export default function CheckoutPage() {
   const router = useRouter()
   const { cartItems, subtotal, total, totalWithDiscount, savings, clearCart } = useCart()
   const [step, setStep] = useState<CheckoutStep>('identificacao')
-  const [identificacao, setIdentificacao] = useState({ nome: '', email: '', cpf: '' })
-  const [endereco, setEndereco] = useState({
+  const [identificacao, setIdentificacao] = useState<Identification>({
+    nome: '',
+    email: '',
+    cpf: '',
+  })
+  const [endereco, setEndereco] = useState<Address>({
     cep: '',
     rua: '',
     numero: '',
@@ -25,38 +31,28 @@ export default function CheckoutPage() {
     cidade: '',
     estado: '',
   })
-  const [paymentMethod, setPaymentMethod] = useState<string>('')
+  const [paymentMethod, setPaymentMethod] = useState<PaymentMethod | ''>('')
   const [guardMessage, setGuardMessage] = useState('')
   const [orderPlaced, setOrderPlaced] = useState(false)
 
   const go = useCallback((s: CheckoutStep) => setStep(s), [])
 
-  const totals = { subtotal, total, totalWithDiscount, savings }
+  const totals: OrderTotals = { subtotal, total, totalWithDiscount, savings }
 
   // Funções de validação replicando regras dos formulários (evita aceitar revisão direta sem preencher)
-  const isIdentificationValid = () => {
-    return (
-      identificacao.nome.trim().length >= 3 &&
-      !!identificacao.email &&
-      validateEmail(identificacao.email) &&
-      !!identificacao.cpf &&
-      validateCPF(identificacao.cpf)
-    )
-  }
-  const isAddressValid = () => {
-    return (
-      validateCEP(endereco.cep) &&
-      !!endereco.rua &&
-      !!endereco.numero &&
-      !!endereco.bairro &&
-      !!endereco.cidade &&
-      endereco.estado.length === 2
-    )
-  }
-  const isPaymentValid = (override?: string) => {
-    const method = override ?? paymentMethod
-    return method === 'pix' || method === 'cartao'
-  }
+  const isIdentificationValid = useCallback(() => {
+    return IdentificationSchema.safeParse(identificacao).success
+  }, [identificacao])
+  const isAddressValid = useCallback(() => {
+    return AddressSchema.safeParse(endereco).success
+  }, [endereco])
+  const isPaymentValid = useCallback(
+    (override?: string) => {
+      const method = override ?? paymentMethod
+      return PaymentMethodSchema.safeParse(method).success
+    },
+    [paymentMethod]
+  )
 
   const firstInvalidStep = (): CheckoutStep | null => {
     if (!isIdentificationValid()) return 'identificacao'
@@ -78,14 +74,13 @@ export default function CheckoutPage() {
     setTimeout(() => router.push('/'), 4000)
   }
 
-  // Limpa mensagem assim que todos os blocos ficam válidos
+  // Limpa mensagem assim que todos os blocos ficam válidos (deps apenas de estado)
   useEffect(() => {
-    if (!firstInvalidStep() && guardMessage) {
-      setGuardMessage('')
-    }
-  }, [identificacao, endereco, paymentMethod])
+    const allValid = isIdentificationValid() && isAddressValid() && isPaymentValid()
+    if (allValid && guardMessage) setGuardMessage('')
+  }, [isIdentificationValid, isAddressValid, isPaymentValid, guardMessage])
 
-  const handleStepChange = (next: CheckoutStep, upcomingPaymentMethod?: string) => {
+  const handleStepChange = (next: CheckoutStep, upcomingPaymentMethod?: PaymentMethod) => {
     // Bloqueia pular etapas sem completar anteriores
     if (next === step) return
     const order: CheckoutStep[] = ['identificacao', 'endereco', 'pagamento', 'revisao']
@@ -110,6 +105,15 @@ export default function CheckoutPage() {
       }
     }
     setGuardMessage('')
+    // Ao avançar para a próxima etapa com blocos válidos, converte para tipos de domínio brandeds
+    if (next === 'endereco') {
+      const parsed = IdentificationSchema.safeParse(identificacao)
+      if (parsed.success) setIdentificacao(toDomainIdentification(parsed.data))
+    }
+    if (next === 'pagamento') {
+      const parsed = AddressSchema.safeParse(endereco)
+      if (parsed.success) setEndereco(toDomainAddress(parsed.data))
+    }
     if (upcomingPaymentMethod) {
       // Só atualiza se mudou
       setPaymentMethod(upcomingPaymentMethod)

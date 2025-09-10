@@ -1,34 +1,27 @@
 import React, { useState } from 'react'
-import { maskCEP, validateCEP } from '@/utils/masks'
+import { maskCEP } from '@/utils/masks'
 import { inputBase } from '@/components/form/styles'
-
-interface Address {
-  cep: string
-  rua: string
-  numero: string
-  complemento: string
-  bairro: string
-  cidade: string
-  estado: string
-}
+import { AddressSchema, type AddressDTO } from '@/types/schemas'
 
 interface Props {
-  value: Address
-  onChange: (value: Address) => void
+  value: AddressDTO
+  onChange: (value: AddressDTO) => void
   onPrev: () => void
   onNext: () => void
 }
 
 export default function AddressForm({ value, onChange, onPrev, onNext }: Props) {
-  const update = (patch: Partial<Address>) => onChange({ ...value, ...patch })
+  const update = (patch: Partial<AddressDTO>) => onChange({ ...value, ...patch })
   const [touched, setTouched] = useState<Record<string, boolean>>({})
+  const parsed = AddressSchema.safeParse(value)
+  const issues = parsed.success ? [] : parsed.error.issues
   const errors = {
-    cep: value.cep && !validateCEP(value.cep) ? 'CEP inválido' : !value.cep ? 'Obrigatório' : '',
-    rua: !value.rua ? 'Obrigatório' : '',
-    numero: !value.numero ? 'Obrigatório' : '',
-    bairro: !value.bairro ? 'Obrigatório' : '',
-    cidade: !value.cidade ? 'Obrigatório' : '',
-    estado: value.estado.length !== 2 ? 'UF' : '',
+    cep: issues.find((i) => i.path[0] === 'cep')?.message || '',
+    rua: issues.find((i) => i.path[0] === 'rua')?.message || '',
+    numero: issues.find((i) => i.path[0] === 'numero')?.message || '',
+    bairro: issues.find((i) => i.path[0] === 'bairro')?.message || '',
+    cidade: issues.find((i) => i.path[0] === 'cidade')?.message || '',
+    estado: issues.find((i) => i.path[0] === 'estado')?.message || '',
   }
   const ready = Object.values(errors).every((e) => e === '')
 
