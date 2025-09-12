@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { FormEvent, useState } from 'react'
+import { LoginSchema } from '@/types/schemas'
 import { absoluteUrl } from '../utils/seo'
 import { useRouter } from 'next/router'
 import { inputBase } from '@/components/form/styles'
@@ -11,10 +12,22 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
 
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+    setFieldErrors({})
+    // Validação básica (mantém coeso e previsível)
+    const parsed = LoginSchema.safeParse({ email, senha: password })
+    if (!parsed.success) {
+      const fe: Record<string, string> = {}
+      parsed.error.issues.forEach((i) => {
+        if (i.path[0]) fe[String(i.path[0])] = i.message
+      })
+      setFieldErrors(fe)
+      return
+    }
     setLoading(true)
     try {
       // Placeholder auth flow
@@ -78,6 +91,11 @@ export default function LoginPage() {
               className={inputBase}
               placeholder="voce@exemplo.com"
             />
+            {fieldErrors.email && (
+              <p className="text-xs text-red-400 mt-1" role="alert">
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="password" className="block text-sm mb-1">
@@ -93,6 +111,11 @@ export default function LoginPage() {
               className={inputBase}
               placeholder="Sua senha"
             />
+            {fieldErrors.senha && (
+              <p className="text-xs text-red-400 mt-1" role="alert">
+                {fieldErrors.senha}
+              </p>
+            )}
           </div>
           {error && (
             <p role="alert" className="text-red-400 text-sm">

@@ -1,6 +1,7 @@
 import Head from 'next/head'
 import Link from 'next/link'
 import { FormEvent, useMemo, useState } from 'react'
+import { SignupSchema } from '@/types/schemas'
 import { useRouter } from 'next/router'
 import { absoluteUrl } from '../utils/seo'
 import { inputBase } from '@/components/form/styles'
@@ -13,6 +14,7 @@ export default function SignupPage() {
   const [confirm, setConfirm] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({})
   const [accepted, setAccepted] = useState(false)
 
   const passwordChecks = useMemo(() => {
@@ -36,6 +38,17 @@ export default function SignupPage() {
   const onSubmit = async (e: FormEvent) => {
     e.preventDefault()
     setError(null)
+    setFieldErrors({})
+    // Validação com Zod (mantém consistência com outras camadas)
+    const baseParsed = SignupSchema.safeParse({ nome: name, email, senha: password })
+    if (!baseParsed.success) {
+      const fe: Record<string, string> = {}
+      baseParsed.error.issues.forEach((i) => {
+        if (i.path[0]) fe[String(i.path[0])] = i.message
+      })
+      setFieldErrors(fe)
+      return
+    }
     if (!isPasswordValid) {
       setError('A senha não atende à política de segurança.')
       return
@@ -110,6 +123,11 @@ export default function SignupPage() {
               className={inputBase}
               placeholder="Seu nome"
             />
+            {fieldErrors.nome && (
+              <p className="text-xs text-red-400 mt-1" role="alert">
+                {fieldErrors.nome}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="email" className="block text-sm mb-1">
@@ -125,6 +143,11 @@ export default function SignupPage() {
               className={inputBase}
               placeholder="voce@exemplo.com"
             />
+            {fieldErrors.email && (
+              <p className="text-xs text-red-400 mt-1" role="alert">
+                {fieldErrors.email}
+              </p>
+            )}
           </div>
           <div>
             <label htmlFor="password" className="block text-sm mb-1">

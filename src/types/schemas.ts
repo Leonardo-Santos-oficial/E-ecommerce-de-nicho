@@ -4,6 +4,16 @@ import { validateCardLuhn, validateExpiryNotPast } from '@/utils/masks'
 
 export const PaymentMethodSchema = z.enum(['pix', 'cartao'])
 
+// Auth / credenciais básicas (mantidas simples; expandir conforme backend)
+export const LoginSchema = z.object({
+  email: z.string().email('Email inválido'),
+  senha: z.string().min(6, 'Mínimo 6 caracteres'),
+})
+
+export const SignupSchema = LoginSchema.extend({
+  nome: z.string().min(3, 'Informe nome completo'),
+})
+
 export const IdentificationSchema = z.object({
   nome: z.string().min(3, 'Informe nome completo'),
   email: z.string().email('Email inválido'),
@@ -63,3 +73,5 @@ export type CardDTO = z.infer<typeof CardSchema>
 export type IdentificationDTO = z.infer<typeof IdentificationSchema>
 export type AddressDTO = z.infer<typeof AddressSchema>
 export type PaymentMethodDTO = z.infer<typeof PaymentMethodSchema>
+export type LoginDTO = z.infer<typeof LoginSchema>
+export type SignupDTO = z.infer<typeof SignupSchema>

@@ -20,10 +20,25 @@ function urlNode(loc: string, lastmod?: string): string {
 
 export const getServerSideProps: GetServerSideProps = async ({ res }) => {
   const site = getSiteUrl()
-  // Usa util centralizado (validação + fallback resiliente)
   const products = loadProducts()
-  const productNodes = products.map((p) => urlNode(absoluteUrl(`/products/${p.slug}`))).join('')
-  const staticNodes = STATIC_PATHS.map((p) => urlNode(`${site}${p}`)).join('')
+
+  // Obtém mtime do arquivo de produtos (fallback: now) sem importar fs em tempo de build do client
+  let lastmodProductsISO = new Date().toISOString()
+  try {
+    const { statSync } = await import('fs')
+    const dataFile = process.cwd() + '/data/products.json'
+    const stat = statSync(dataFile)
+    lastmodProductsISO = stat.mtime.toISOString()
+  } catch {
+    // Silencia: se não conseguir ler, continuamos sem prejudicar o sitemap
+  }
+
+  const productNodes = products
+    .map((p) => urlNode(absoluteUrl(`/products/${p.slug}`), lastmodProductsISO))
+    .join('')
+
+  // Usamos o mesmo lastmod para páginas estáticas (alternativa futura: timestamps dedicados)
+  const staticNodes = STATIC_PATHS.map((p) => urlNode(`${site}${p}`, lastmodProductsISO)).join('')
   const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticNodes}${productNodes}</urlset>`
 
   res.setHeader('Content-Type', 'application/xml')
