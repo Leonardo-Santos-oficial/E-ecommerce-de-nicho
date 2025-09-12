@@ -2,7 +2,6 @@ import fs from 'fs'
 import path from 'path'
 import { GetStaticProps } from 'next'
 import { RawProductsArraySchema } from '@/types/schemas'
-import Layout from '../../components/Layout'
 import { Product } from '../../types/Product'
 import { formatCurrency } from '../../utils/format'
 import { ProductCard } from '../../components/ProductCard'
@@ -33,7 +32,7 @@ export default function ProductsPage({ products }: { products: Product[] }) {
   }, [products, category, maxPrice])
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Produtos | DevWear</title>
         <meta name="description" content="Catálogo completo de produtos DevWear." />
@@ -84,7 +83,7 @@ export default function ProductsPage({ products }: { products: Product[] }) {
           <ProductCard key={p.id} product={p} onAdd={addItem} />
         ))}
       </div>
-    </Layout>
+    </>
   )
 }
 

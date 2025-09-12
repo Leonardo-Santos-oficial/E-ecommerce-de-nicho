@@ -1,7 +1,6 @@
 import fs from 'fs'
 import path from 'path'
 import Link from 'next/link'
-import Layout from '../components/Layout'
 import Head from 'next/head'
 import { absoluteUrl } from '../utils/seo'
 import { Product } from '../types/Product'
@@ -36,7 +35,7 @@ export default function Home({ featured, bestSellers, recommended }: HomeProps) 
   const recently = useRecentlyViewed(pool)
   const flashEndsAt = (typeof window !== 'undefined' ? Date.now() : 0) + 4 * 60 * 60 * 1000
   return (
-    <Layout>
+    <>
       <Head>
         <title>DevWear | E-commerce para Devs</title>
         <meta
@@ -134,7 +133,7 @@ export default function Home({ featured, bestSellers, recommended }: HomeProps) 
           </div>
         </div>
       </Section>
-    </Layout>
+    </>
   )
 }
 

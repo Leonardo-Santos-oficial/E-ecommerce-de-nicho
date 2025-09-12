@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react'
-import Layout from '@/components/Layout'
 import CheckoutSteps, { CheckoutStep } from '@/components/checkout/CheckoutSteps'
 import IdentificationForm from '@/components/checkout/IdentificationForm'
 import AddressForm from '@/components/checkout/AddressForm'
@@ -124,7 +123,7 @@ export default function CheckoutPage() {
   // Guarda de rota se carrinho vazio
   if (!orderPlaced && cartItems.length === 0) {
     return (
-      <Layout>
+      <>
         <Head>
           <title>Checkout | DevWear</title>
         </Head>
@@ -132,12 +131,12 @@ export default function CheckoutPage() {
           <h1 className="mb-4">Checkout</h1>
           <p className="text-white">Seu carrinho está vazio. Adicione itens antes de continuar.</p>
         </div>
-      </Layout>
+      </>
     )
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>Checkout | DevWear</title>
         <meta name="robots" content="noindex" />
@@ -254,6 +253,6 @@ export default function CheckoutPage() {
           </div>
         )}
       </div>
-    </Layout>
+    </>
   )
 }

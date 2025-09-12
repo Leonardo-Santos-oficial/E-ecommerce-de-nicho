@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'
 import LegalPage from '@/components/legal/LegalPage'
-import Layout from '@/components/Layout'
 
 // Página de Política de Privacidade - responsabilidade única: exibir conteúdo e metadados SEO.
 export default function PrivacyPolicyPage() {
@@ -30,7 +29,7 @@ export default function PrivacyPolicyPage() {
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -145,6 +144,6 @@ export default function PrivacyPolicyPage() {
           Dúvidas gerais: <a href="mailto:contato@devwear.com">contato@devwear.com</a>
         </p>
       </LegalPage>
-    </Layout>
+    </>
   )
 }

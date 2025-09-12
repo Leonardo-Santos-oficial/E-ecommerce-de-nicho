@@ -3,14 +3,13 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../utils/seo'
 import LegalPage from '@/components/legal/LegalPage'
-import Layout from '@/components/Layout'
 
 export default function TermsOfUsePage() {
   const title = 'Termos de Uso | DevWear'
   const description =
     'Leia os Termos de Uso da DevWear para entender as condições de uso do site e dos serviços oferecidos.'
   return (
-    <Layout>
+    <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -73,6 +72,6 @@ export default function TermsOfUsePage() {
           Suporte e esclarecimentos: <a href="mailto:contato@devwear.com">contato@devwear.com</a>
         </p>
       </LegalPage>
-    </Layout>
+    </>
   )
 }

@@ -6,7 +6,6 @@ import fs from 'fs'
 import path from 'path'
 import { GetStaticPaths, GetStaticProps } from 'next'
 import { RawProductsArraySchema } from '@/types/schemas'
-import Layout from '../../components/Layout'
 import { formatCurrency } from '../../utils/format'
 import { useCart } from '../../hooks/useCart'
 import type { Product as CartProduct } from '../../types/Product'
@@ -84,7 +83,7 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
   )
 
   return (
-    <Layout>
+    <>
       <Head>
         {/* Title + Meta Description (CTR) */}
         <title>{`${product.name} | DevWear`}</title>
@@ -212,7 +211,7 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
       />
 
       <RelatedProducts products={related} onAdd={(p) => addItem(p)} />
-    </Layout>
+    </>
   )
 }
 

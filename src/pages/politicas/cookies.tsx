@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'
 import LegalPage from '@/components/legal/LegalPage'
-import Layout from '@/components/Layout'
 
 // Página de Política de Cookies.
 // Mantida simples e focada (SRP) - apenas a renderização e SEO. Qualquer lógica futura de consentimento deve ficar em outro módulo.
@@ -38,7 +37,7 @@ export default function CookiesPolicyPage() {
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -126,6 +125,6 @@ export default function CookiesPolicyPage() {
           Dúvidas? <a href="mailto:contato@devwear.com">contato@devwear.com</a>
         </p>
       </LegalPage>
-    </Layout>
+    </>
   )
 }

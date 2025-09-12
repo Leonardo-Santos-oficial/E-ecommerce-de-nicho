@@ -1,4 +1,3 @@
-import Layout from '@/components/Layout'
 import { useCart } from '@/hooks/useCart'
 import CartItemsList from '@/components/cart/CartItemsList'
 import AdditionalServices from '@/components/cart/AdditionalServices'
@@ -20,7 +19,7 @@ export default function CartPage() {
   const router = useRouter()
 
   return (
-    <Layout>
+    <>
       <h1 className="mb-4 sm:mb-6">Carrinho</h1>
       {cartItems.length === 0 ? (
         <p className="text-white">Seu carrinho está vazio.</p>
@@ -47,6 +46,6 @@ export default function CartPage() {
           />
         </div>
       )}
-    </Layout>
+    </>
   )
 }

@@ -3,7 +3,6 @@ import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'
 import LegalPage from '@/components/legal/LegalPage'
-import Layout from '@/components/Layout'
 
 // Página de referência resumida do Código de Defesa do Consumidor (CDC) aplicada ao contexto da loja.
 export default function ConsumerRightsPage() {
@@ -42,7 +41,7 @@ export default function ConsumerRightsPage() {
   }
 
   return (
-    <Layout>
+    <>
       <Head>
         <title>{title}</title>
         <meta name="description" content={description} />
@@ -125,6 +124,6 @@ export default function ConsumerRightsPage() {
         <h2>12. Referência</h2>
         <p>Leia o texto integral em fontes oficiais para aprofundamento.</p>
       </LegalPage>
-    </Layout>
+    </>
   )
 }
