@@ -8,10 +8,6 @@ import { RawProductsArraySchema } from '@/types/schemas'
 const STATIC_PATHS: string[] = [
   '/',
   '/products',
-  '/cart',
-  '/checkout',
-  '/login',
-  '/signup',
   '/termos-de-uso',
   '/politicas/cookies',
   '/politicas/privacidade',

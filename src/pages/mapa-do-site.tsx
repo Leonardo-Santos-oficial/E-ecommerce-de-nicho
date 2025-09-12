@@ -14,10 +14,6 @@ export const SITE_MAP_SECTIONS: SiteMapSection[] = [
     links: [
       { href: '/', label: 'Início', description: 'Página principal e destaques' },
       { href: '/products', label: 'Produtos', description: 'Catálogo completo' },
-      { href: '/cart', label: 'Carrinho', description: 'Itens selecionados para compra' },
-      { href: '/checkout', label: 'Checkout', description: 'Finalizar pedido' },
-      { href: '/login', label: 'Entrar', description: 'Acesse sua conta' },
-      { href: '/signup', label: 'Criar conta', description: 'Crie um novo perfil' },
     ],
   },
   {
