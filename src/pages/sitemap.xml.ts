@@ -1,10 +1,8 @@
-import type { NextApiRequest, NextApiResponse } from 'next'
-import fs from 'fs'
-import path from 'path'
+import { GetServerSideProps } from 'next'
 import { absoluteUrl, getSiteUrl } from '@/utils/seo'
-import { RawProductsArraySchema } from '@/types/schemas'
+import { loadProducts } from '@/lib/products'
 
-// Páginas estáticas conhecidas (manter curto e legível; fácil de estender sem modificar lógica principal -> OCP)
+// Páginas estáticas conhecidas (curto e extensível via adição sem mudar lógica) -> OCP
 const STATIC_PATHS: string[] = [
   '/',
   '/products',
@@ -15,38 +13,27 @@ const STATIC_PATHS: string[] = [
   '/mapa-do-site',
 ]
 
-// Gera bloco <url>
+// Produz um bloco <url>
 function urlNode(loc: string, lastmod?: string): string {
   return `<url><loc>${loc}</loc>${lastmod ? `<lastmod>${lastmod}</lastmod>` : ''}</url>`
 }
 
-export default function handler(_req: NextApiRequest, res: NextApiResponse) {
-  try {
-    const site = getSiteUrl()
-    const dataFile = path.join(process.cwd(), 'data', 'products.json')
-    let productNodes = ''
-    if (fs.existsSync(dataFile)) {
-      try {
-        const raw = fs.readFileSync(dataFile, 'utf-8')
-        const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
-        if (parsed.success) {
-          productNodes = parsed.data
-            .map((p) => urlNode(absoluteUrl(`/products/${p.slug}`)))
-            .join('')
-        }
-      } catch {
-        // Silencia falha de parse; mantemos sitemap funcional com páginas estáticas (SRP / Resiliência)
-      }
-    }
+export const getServerSideProps: GetServerSideProps = async ({ res }) => {
+  const site = getSiteUrl()
+  // Usa util centralizado (validação + fallback resiliente)
+  const products = loadProducts()
+  const productNodes = products.map((p) => urlNode(absoluteUrl(`/products/${p.slug}`))).join('')
+  const staticNodes = STATIC_PATHS.map((p) => urlNode(`${site}${p}`)).join('')
+  const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticNodes}${productNodes}</urlset>`
 
-    const staticNodes = STATIC_PATHS.map((p) => urlNode(`${site}${p}`)).join('')
-    const body = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">${staticNodes}${productNodes}</urlset>`
+  res.setHeader('Content-Type', 'application/xml')
+  res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600')
+  res.write(body)
+  res.end()
+  return { props: {} }
+}
 
-    res.setHeader('Content-Type', 'application/xml')
-    // Cache leve (1h) - search engines podem aceitar.
-    res.setHeader('Cache-Control', 'public, max-age=3600, stale-while-revalidate=600')
-    res.status(200).send(body)
-  } catch (e) {
-    res.status(500).send('')
-  }
+// Página vazia: resposta já enviada no SSR
+export default function SiteMap() {
+  return null
 }
