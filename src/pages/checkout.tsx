@@ -11,7 +11,6 @@ import type { PaymentMethod, Identification, Address, OrderTotals } from '@/type
 import { IdentificationSchema, AddressSchema, PaymentMethodSchema } from '@/types/schemas'
 import { toDomainIdentification, toDomainAddress } from '@/types/mappers'
 
-// Mantém dados do fluxo de checkout em um único componente page-level para simplicidade (Single Responsibility: orquestrar o fluxo)
 export default function CheckoutPage() {
   const router = useRouter()
   const { cartItems, subtotal, total, totalWithDiscount, savings, clearCart } = useCart()
@@ -38,7 +37,6 @@ export default function CheckoutPage() {
 
   const totals: OrderTotals = { subtotal, total, totalWithDiscount, savings }
 
-  // Funções de validação replicando regras dos formulários (evita aceitar revisão direta sem preencher)
   const isIdentificationValid = useCallback(() => {
     return IdentificationSchema.safeParse(identificacao).success
   }, [identificacao])
@@ -73,18 +71,15 @@ export default function CheckoutPage() {
     setTimeout(() => router.push('/'), 4000)
   }
 
-  // Limpa mensagem assim que todos os blocos ficam válidos (deps apenas de estado)
   useEffect(() => {
     const allValid = isIdentificationValid() && isAddressValid() && isPaymentValid()
     if (allValid && guardMessage) setGuardMessage('')
   }, [isIdentificationValid, isAddressValid, isPaymentValid, guardMessage])
 
   const handleStepChange = (next: CheckoutStep, upcomingPaymentMethod?: PaymentMethod) => {
-    // Bloqueia pular etapas sem completar anteriores
     if (next === step) return
     const order: CheckoutStep[] = ['identificacao', 'endereco', 'pagamento', 'revisao']
     const targetIndex = order.indexOf(next)
-    // Verifica cada etapa anterior
     for (let i = 0; i < targetIndex; i++) {
       const s = order[i]
       if (s === 'identificacao' && !isIdentificationValid()) {
@@ -104,7 +99,6 @@ export default function CheckoutPage() {
       }
     }
     setGuardMessage('')
-    // Ao avançar para a próxima etapa com blocos válidos, converte para tipos de domínio brandeds
     if (next === 'endereco') {
       const parsed = IdentificationSchema.safeParse(identificacao)
       if (parsed.success) setIdentificacao(toDomainIdentification(parsed.data))
@@ -114,25 +108,24 @@ export default function CheckoutPage() {
       if (parsed.success) setEndereco(toDomainAddress(parsed.data))
     }
     if (upcomingPaymentMethod) {
-      // Só atualiza se mudou
       setPaymentMethod(upcomingPaymentMethod)
     }
     setStep(next)
   }
 
-  // Guarda de rota se carrinho vazio
+  // Guarda de rota se carrinho vazio (UX: redireciona automaticamente)
+  useEffect(() => {
+    if (!orderPlaced && cartItems.length === 0) {
+      // Evita redirecionar durante build/SSR
+      if (typeof window !== 'undefined') {
+        router.replace('/cart')
+      }
+    }
+  }, [cartItems.length, orderPlaced, router])
+
+  // Fallback render para evitar flash
   if (!orderPlaced && cartItems.length === 0) {
-    return (
-      <>
-        <Head>
-          <title>Checkout | DevWear</title>
-        </Head>
-        <div className="max-w-xl mx-auto text-center py-20">
-          <h1 className="mb-4">Checkout</h1>
-          <p className="text-white">Seu carrinho está vazio. Adicione itens antes de continuar.</p>
-        </div>
-      </>
-    )
+    return null
   }
 
   return (

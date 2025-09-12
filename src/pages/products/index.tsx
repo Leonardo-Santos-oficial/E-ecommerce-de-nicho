@@ -1,7 +1,5 @@
-import fs from 'fs'
-import path from 'path'
 import { GetStaticProps } from 'next'
-import { RawProductsArraySchema } from '@/types/schemas'
+import { loadProducts, type LoadedProductRaw } from '@/lib/products'
 import { Product } from '../../types/Product'
 import { formatCurrency } from '../../utils/format'
 import { ProductCard } from '../../components/ProductCard'
@@ -88,10 +86,8 @@ export default function ProductsPage({ products }: { products: Product[] }) {
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const dataFile = path.join(process.cwd(), 'data', 'products.json')
-  const raw = fs.readFileSync(dataFile, 'utf-8')
-  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
-  const products = (parsed.success ? parsed.data : []).map((p) => ({
+  const rawProducts = loadProducts()
+  const products = rawProducts.map((p: LoadedProductRaw) => ({
     id: String(p.id ?? p.slug),
     slug: p.slug,
     name: p.name,

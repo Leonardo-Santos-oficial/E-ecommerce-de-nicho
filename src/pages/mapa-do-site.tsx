@@ -4,44 +4,10 @@ import Link from 'next/link'
 import { absoluteUrl } from '@/utils/seo'
 import type { SiteMapSection } from '@/types/sitemap'
 import { SiteMapCard } from '@/components/sitemap/SiteMapCard'
+import { SITE_MAP_SECTIONS_CONFIG } from '@/config/navigation'
 
 // Fonte única de verdade para as seções do Mapa do Site (SRP + OCP)
-export const SITE_MAP_SECTIONS: SiteMapSection[] = [
-  {
-    id: 'institucional',
-    title: 'Institucional',
-    icon: '🏢',
-    links: [
-      { href: '/', label: 'Início', description: 'Página principal e destaques' },
-      { href: '/products', label: 'Produtos', description: 'Catálogo completo' },
-    ],
-  },
-  {
-    id: 'politicas',
-    title: 'Políticas',
-    icon: '📜',
-    links: [
-      {
-        href: '/politicas/privacidade',
-        label: 'Política de Privacidade',
-        description: 'Dados e privacidade',
-      },
-      { href: '/politicas/cookies', label: 'Política de Cookies', description: 'Uso de cookies' },
-      { href: '/termos-de-uso', label: 'Termos de Uso', description: 'Regras de utilização' },
-      {
-        href: '/politicas/consumidor',
-        label: 'Código de Defesa do Consumidor',
-        description: 'Direitos do cliente',
-      },
-    ],
-  },
-  {
-    id: 'util',
-    title: 'Utilitários',
-    icon: '🧭',
-    links: [{ href: '/mapa-do-site', label: 'Mapa do Site', description: 'Você está aqui' }],
-  },
-]
+export const SITE_MAP_SECTIONS: SiteMapSection[] = SITE_MAP_SECTIONS_CONFIG
 
 export default function SiteMapPage() {
   const title = 'Mapa do Site | DevWear'

@@ -1,12 +1,10 @@
-import fs from 'fs'
-import path from 'path'
 import Link from 'next/link'
 import Head from 'next/head'
 import { absoluteUrl } from '../utils/seo'
 import { Product } from '../types/Product'
 import { formatCurrency } from '../utils/format'
 import { GetStaticProps } from 'next'
-import { RawProductsArraySchema } from '@/types/schemas'
+import { loadProducts, type LoadedProductRaw } from '@/lib/products'
 import dynamic from 'next/dynamic'
 import Section from '@/components/home/Section'
 import ProductsRow from '@/components/home/ProductsRow'
@@ -18,8 +16,6 @@ import Countdown from '@/components/home/Countdown'
 import NewsletterSignup from '@/components/home/NewsletterSignup'
 import TrustBadges from '@/components/home/TrustBadges'
 import useRecentlyViewed from '@/hooks/useRecentlyViewed'
-
-// Lazy-load hero and brands to keep LCP light
 const HeroCarousel = dynamic(() => import('@/components/home/HeroCarousel'), { ssr: false })
 const BrandsStrip = dynamic(() => import('@/components/home/BrandsStrip'), { ssr: false })
 const BrandsGrid = dynamic(() => import('@/components/home/BrandsGrid'), { ssr: false })
@@ -138,10 +134,8 @@ export default function Home({ featured, bestSellers, recommended }: HomeProps) 
 }
 
 export const getStaticProps: GetStaticProps = async () => {
-  const dataFile = path.join(process.cwd(), 'data', 'products.json')
-  const raw = fs.readFileSync(dataFile, 'utf-8')
-  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
-  const products = (parsed.success ? parsed.data : []).map((p) => ({
+  const rawProducts = loadProducts()
+  const products = rawProducts.map((p: LoadedProductRaw) => ({
     id: String(p.id ?? p.slug),
     slug: p.slug,
     name: p.name,
@@ -154,14 +148,14 @@ export const getStaticProps: GetStaticProps = async () => {
   }))
   const featured = products
     .slice(0, 4)
-    .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
+    .map((p: Product) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
 
   const bestSellers = products
     .slice(0, 8)
-    .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
+    .map((p: Product) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
   const recommended = products
     .slice(-8)
-    .map((p) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
+    .map((p: Product) => ({ ...p, formattedPrice: formatCurrency(p.price) }))
 
   return { props: { featured, bestSellers, recommended }, revalidate: 3600 }
 }

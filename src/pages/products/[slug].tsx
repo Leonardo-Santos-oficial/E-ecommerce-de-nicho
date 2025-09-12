@@ -2,10 +2,8 @@ import { useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'
-import fs from 'fs'
-import path from 'path'
 import { GetStaticPaths, GetStaticProps } from 'next'
-import { RawProductsArraySchema } from '@/types/schemas'
+import { loadProducts } from '@/lib/products'
 import { formatCurrency } from '../../utils/format'
 import { useCart } from '../../hooks/useCart'
 import type { Product as CartProduct } from '../../types/Product'
@@ -21,7 +19,7 @@ import ReviewsTab from '../../components/product/ReviewsTab'
 import RelatedProducts from '../../components/product/RelatedProducts'
 import { recordView } from '@/hooks/useRecentlyViewed'
 
-// Local type for SEO-rich product detail page (per requirements)
+// Tipo SEO separado para manter clareza de quais campos alimentam metadata/JSON-LD
 type SEOProduct = {
   id: number
   slug: string
@@ -50,12 +48,10 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 
   const formattedPrice = useMemo(() => formatCurrency(product.price), [product.price])
 
-  // Record recently viewed for home usage
   useEffect(() => {
     recordView(product.slug)
   }, [product.slug])
 
-  // Map SEO product into cart product shape used by CartContext
   const cartProduct: CartProduct = useMemo(
     () => ({
       id: product.sku,
@@ -85,10 +81,8 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
   return (
     <>
       <Head>
-        {/* Title + Meta Description (CTR) */}
         <title>{`${product.name} | DevWear`}</title>
         <meta name="description" content={product.shortDescription} />
-        {/* Canonical and social cards */}
         <link rel="canonical" href={absoluteUrl(`/products/${product.slug}`)} />
         <meta property="og:type" content="product" />
         <meta property="og:title" content={`${product.name} | DevWear`} />
@@ -99,7 +93,6 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
         <meta name="twitter:title" content={`${product.name} | DevWear`} />
         <meta name="twitter:description" content={product.shortDescription} />
         <meta name="twitter:image" content={absoluteUrl(product.imageUrl || '/placeholder.svg')} />
-        {/* Product JSON-LD */}
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{
@@ -131,7 +124,6 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
         />
       </Head>
       <article className="grid grid-cols-1 md:grid-cols-2 gap-8">
-        {/* Left = Gallery */}
         <ProductGallery
           images={product.images && product.images.length ? product.images : [product.imageUrl]}
           alt={
@@ -140,7 +132,6 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
           }
         />
 
-        {/* Right = Info + Actions */}
         <div className="space-y-6">
           <ProductInfo
             name={product.name}
@@ -165,7 +156,6 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
         </div>
       </article>
 
-      {/* Content Sections */}
       <section className="mt-12">
         <HorizontalBanner src="/vercel.svg" alt="DevWear Promo" href="/products" />
       </section>
@@ -216,10 +206,7 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 }
 
 export const getStaticPaths: GetStaticPaths = async () => {
-  const dataFile = path.join(process.cwd(), 'data', 'products.json')
-  const raw = fs.readFileSync(dataFile, 'utf-8')
-  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
-  const products = parsed.success ? parsed.data : []
+  const products = loadProducts()
 
   return {
     paths: products.map((p) => ({ params: { slug: p.slug } })),
@@ -228,18 +215,17 @@ export const getStaticPaths: GetStaticPaths = async () => {
 }
 
 export const getStaticProps: GetStaticProps<ProductPageProps> = async ({ params }) => {
-  const slug = params?.slug as string
-  const dataFile = path.join(process.cwd(), 'data', 'products.json')
-  const raw = fs.readFileSync(dataFile, 'utf-8')
-  const parsed = RawProductsArraySchema.safeParse(JSON.parse(raw))
-  const rawProducts = parsed.success ? parsed.data : []
+  if (!params || typeof params.slug !== 'string') {
+    return { notFound: true }
+  }
+  const slug = params.slug
+  const rawProducts = loadProducts()
 
   const index = rawProducts.findIndex((p) => p.slug === slug)
   const rawProduct = index >= 0 ? rawProducts[index] : null
 
   if (!rawProduct) return { notFound: true }
 
-  // Helpers
   const toShort = (text: string, max = 160) => {
     if (!text) return ''
     const clean = String(text).replace(/\s+/g, ' ').trim()
@@ -269,7 +255,6 @@ export const getStaticProps: GetStaticProps<ProductPageProps> = async ({ params 
     },
   }
 
-  // Build related products list (same category, excluding current)
   const relatedRaw = rawProducts
     .filter((p) => p.category === product.category && p.slug !== product.slug)
     .slice(0, 8)

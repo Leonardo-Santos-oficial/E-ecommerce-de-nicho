@@ -4,6 +4,12 @@ import React, { ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useCart } from '../hooks/useCart'
 import { absoluteUrl } from '../utils/seo'
+import {
+  NAV_PRIMARY,
+  FOOTER_INSTITUTIONAL,
+  FOOTER_POLICIES,
+  FOOTER_SOCIALS,
+} from '@/config/navigation'
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { totalItems } = useCart()
@@ -18,7 +24,7 @@ export default function Layout({ children }: { children: ReactNode }) {
   const [mobileOpen, setMobileOpen] = useState(false)
   const [highContrast, setHighContrast] = useState(false)
   useEffect(() => {
-    // inicializa
+    // restaura preferência de alto contraste
     const stored =
       typeof window !== 'undefined' ? window.localStorage.getItem('pref-high-contrast') : null
     if (stored === '1') setHighContrast(true)
@@ -33,11 +39,7 @@ export default function Layout({ children }: { children: ReactNode }) {
     }
   }, [highContrast])
 
-  // Navegação principal do site. Scout Rule aplicado: corrigido typo em "/products" e chave label.
-  const navItems = [
-    { href: '/', label: 'Início' },
-    { href: '/products', label: 'Produtos' },
-  ]
+  const navItems = NAV_PRIMARY
 
   return (
     <div>
@@ -119,12 +121,7 @@ export default function Layout({ children }: { children: ReactNode }) {
             ))}
           </nav>
           <div className="flex items-center gap-2">
-            <Link
-              href="/login"
-              className="btn btn-secondary hidden sm:inline-flex"
-              onMouseEnter={prefetchHover('/login')}
-              onFocus={prefetchHover('/login')}
-            >
+            <Link href="/login" className="btn btn-secondary hidden sm:inline-flex">
               Entrar
             </Link>
             <Link
@@ -158,8 +155,6 @@ export default function Layout({ children }: { children: ReactNode }) {
               <Link
                 href="/login"
                 className="btn btn-secondary"
-                onMouseEnter={prefetchHover('/login')}
-                onFocus={prefetchHover('/login')}
                 onClick={() => setMobileOpen(false)}
               >
                 Entrar
@@ -174,24 +169,9 @@ export default function Layout({ children }: { children: ReactNode }) {
       <footer className="border-t border-slate-800 py-10 mt-8 text-sm">
         {/** Arrays extraídos para evitar duplicação e facilitar manutenção (SRP/DRY). */}
         {(() => {
-          const institutional = [
-            { href: '/sobre', label: 'Sobre a DevWear' },
-            { href: '/blog', label: 'Blog' },
-            { href: '/parcerias', label: 'Parcerias' },
-            { href: '/trabalhe-conosco', label: 'Trabalhe Conosco' },
-            { href: '/acessibilidade', label: 'Acessibilidade' },
-            { href: '/mapa-do-site', label: 'Mapa do Site' },
-          ]
-          const policies = [
-            { href: '/politicas/cookies', label: 'Políticas de Cookies' },
-            { href: '/politicas/privacidade', label: 'Políticas de Privacidade' },
-            { href: '/termos-de-uso', label: 'Termos de Uso' },
-            { href: '/politicas/consumidor', label: 'Código de Defesa do Consumidor' },
-          ]
-          const socials = [
-            { href: 'https://www.instagram.com/devwear', label: 'Instagram' },
-            { href: 'https://www.linkedin.com/company/devwear', label: 'LinkedIn' },
-          ]
+          const institutional = FOOTER_INSTITUTIONAL
+          const policies = FOOTER_POLICIES
+          const socials = FOOTER_SOCIALS
           return (
             <div className="container grid gap-8 md:grid-cols-4" role="contentinfo">
               <section aria-labelledby="ft-atendimento">
