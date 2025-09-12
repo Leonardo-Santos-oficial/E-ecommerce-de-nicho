@@ -1,6 +1,6 @@
 import Link from 'next/link'
 import Head from 'next/head'
-import { ReactNode, useEffect, useState } from 'react'
+import React, { ReactNode, useEffect, useState } from 'react'
 import { useRouter } from 'next/router'
 import { useCart } from '../hooks/useCart'
 import { absoluteUrl } from '../utils/seo'
@@ -172,102 +172,95 @@ export default function Layout({ children }: { children: ReactNode }) {
         {children}
       </main>
       <footer className="border-t border-slate-800 py-10 mt-8 text-sm">
-        <div className="container grid gap-8 md:grid-cols-4">
-          <section>
-            <h2 className="font-semibold text-white mb-2">Atendimento</h2>
-            <p className="text-white">
-              08:00 às 20:00 - Segunda a Sexta;
-              <br />
-              09:00 às 15:00 - Sábado (exceto Dom. e feriados)
-            </p>
-            <h3 className="font-medium text-white mt-4">Fale conosco</h3>
-            <p className="text-white">Chat • contato@devwear.com</p>
-          </section>
-          <section>
-            <h2 className="font-semibold text-white mb-2">Institucional</h2>
-            <ul className="space-y-1 text-white">
-              <li>
-                <Link href="/sobre" className="hover:text-cyan-400">
-                  Sobre a DevWear
-                </Link>
-              </li>
-              <li>
-                <Link href="/blog" className="hover:text-cyan-400">
-                  Blog
-                </Link>
-              </li>
-              <li>
-                <Link href="/parcerias" className="hover:text-cyan-400">
-                  Parcerias
-                </Link>
-              </li>
-              <li>
-                <Link href="/trabalhe-conosco" className="hover:text-cyan-400">
-                  Trabalhe Conosco
-                </Link>
-              </li>
-              <li>
-                <Link href="/acessibilidade" className="hover:text-cyan-400">
-                  Acessibilidade
-                </Link>
-              </li>
-              <li>
-                <Link href="/mapa-do-site" className="hover:text-cyan-400">
-                  Mapa do Site
-                </Link>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <h2 className="font-semibold text-white mb-2">Políticas</h2>
-            <ul className="space-y-1 text-white">
-              <li>
-                <Link href="/politicas/cookies" className="hover:text-cyan-400">
-                  Políticas de Cookies
-                </Link>
-              </li>
-              <li>
-                <Link href="/politicas/privacidade" className="hover:text-cyan-400">
-                  Políticas de Privacidade
-                </Link>
-              </li>
-              <li>
-                <Link href="/termos-de-uso" className="hover:text-cyan-400">
-                  Termos de Uso
-                </Link>
-              </li>
-              <li>
-                <Link href="/politicas/consumidor" className="hover:text-cyan-400">
-                  Código de Defesa do Consumidor
-                </Link>
-              </li>
-            </ul>
-          </section>
-          <section>
-            <h2 className="font-semibold text-white mb-2">Apps & Redes</h2>
-            <div className="space-y-2">
-              <div className="flex gap-2">
-                <Link href="#" className="btn btn-outline">
-                  App Store
-                </Link>
-                <Link href="#" className="btn btn-outline">
-                  Google Play
-                </Link>
-              </div>
-              <div className="flex gap-3 text-white">
-                <Link href="https://www.instagram.com/devwear" className="hover:text-cyan-400">
-                  Instagram
-                </Link>
-                <Link
-                  href="https://www.linkedin.com/company/devwear"
-                  className="hover:text-cyan-400"
-                >
-                  LinkedIn
-                </Link>
-              </div>
+        {/** Arrays extraídos para evitar duplicação e facilitar manutenção (SRP/DRY). */}
+        {(() => {
+          const institutional = [
+            { href: '/sobre', label: 'Sobre a DevWear' },
+            { href: '/blog', label: 'Blog' },
+            { href: '/parcerias', label: 'Parcerias' },
+            { href: '/trabalhe-conosco', label: 'Trabalhe Conosco' },
+            { href: '/acessibilidade', label: 'Acessibilidade' },
+            { href: '/mapa-do-site', label: 'Mapa do Site' },
+          ]
+          const policies = [
+            { href: '/politicas/cookies', label: 'Políticas de Cookies' },
+            { href: '/politicas/privacidade', label: 'Políticas de Privacidade' },
+            { href: '/termos-de-uso', label: 'Termos de Uso' },
+            { href: '/politicas/consumidor', label: 'Código de Defesa do Consumidor' },
+          ]
+          const socials = [
+            { href: 'https://www.instagram.com/devwear', label: 'Instagram' },
+            { href: 'https://www.linkedin.com/company/devwear', label: 'LinkedIn' },
+          ]
+          return (
+            <div className="container grid gap-8 md:grid-cols-4" role="contentinfo">
+              <section aria-labelledby="ft-atendimento">
+                <h2 id="ft-atendimento" className="font-semibold text-white mb-2">
+                  Atendimento
+                </h2>
+                <p className="text-white">
+                  08:00 às 20:00 - Segunda a Sexta;
+                  <br />
+                  09:00 às 15:00 - Sábado (exceto Dom. e feriados)
+                </p>
+                <h3 className="font-medium text-white mt-4">Fale conosco</h3>
+                <p className="text-white">Chat • contato@devwear.com</p>
+              </section>
+              <nav aria-labelledby="ft-inst" className="not-prose">
+                <h2 id="ft-inst" className="font-semibold text-white mb-2">
+                  Institucional
+                </h2>
+                <ul className="space-y-1 text-white">
+                  {institutional.map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} className="hover:text-cyan-400">
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <nav aria-labelledby="ft-policies" className="not-prose">
+                <h2 id="ft-policies" className="font-semibold text-white mb-2">
+                  Políticas
+                </h2>
+                <ul className="space-y-1 text-white">
+                  {policies.map((item) => (
+                    <li key={item.href}>
+                      <Link href={item.href} className="hover:text-cyan-400">
+                        {item.label}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+              <section aria-labelledby="ft-redes">
+                <h2 id="ft-redes" className="font-semibold text-white mb-2">
+                  Apps & Redes
+                </h2>
+                <div className="space-y-2">
+                  <div className="flex gap-2">
+                    <Link href="#" className="btn btn-outline">
+                      App Store
+                    </Link>
+                    <Link href="#" className="btn btn-outline">
+                      Google Play
+                    </Link>
+                  </div>
+                  <ul className="flex gap-3 text-white">
+                    {socials.map((s) => (
+                      <li key={s.href}>
+                        <Link href={s.href} className="hover:text-cyan-400">
+                          {s.label}
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </section>
             </div>
-          </section>
-        </div>
+          )
+        })()}
         <div className="container mt-8 text-white">
           Rua Carlos Gomes, 1321 - Centro, Limeira / SP - CEP: 13480-010 | DevWear® é uma marca
           fictícia para portfolio. Este site usa criptografia SSL. Imagens ilustrativas.
