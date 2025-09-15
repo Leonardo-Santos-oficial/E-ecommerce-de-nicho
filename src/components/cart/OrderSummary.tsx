@@ -63,6 +63,9 @@ export default function OrderSummary({
               Você economiza {formatCurrency(savings)}
               {discountLabel ? ` (${discountLabel})` : ''}
             </span>
+            <span className="text-[10px] text-white/60">
+              Economia total considerando a melhor estratégia (Pix ou Cupom).
+            </span>
           </div>
         )}
         <button className="btn btn-primary w-full" onClick={onContinue}>

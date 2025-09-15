@@ -14,7 +14,7 @@ type Slide = {
 const SLIDES: Slide[] = [
   {
     id: 'ofertas',
-    image: '/banners/hero-1.jpg',
+    image: '/banners/hero-1.svg',
     alt: 'Ofertas da semana',
     href: '/products',
     headline: 'Ofertas da Semana',
@@ -22,7 +22,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 'novidades',
-    image: '/banners/hero-2.jpg',
+    image: '/banners/hero-2.svg',
     alt: 'Novidades devwear',
     href: '/products',
     headline: 'Novidades DevWear',
@@ -30,7 +30,7 @@ const SLIDES: Slide[] = [
   },
   {
     id: 'best',
-    image: '/banners/hero-3.jpg',
+    image: '/banners/hero-3.svg',
     alt: 'Mais vendidos',
     href: '/products',
     headline: 'Mais Vendidos',

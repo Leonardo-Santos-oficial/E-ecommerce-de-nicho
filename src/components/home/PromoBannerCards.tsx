@@ -15,21 +15,21 @@ const PROMOS: Promo[] = [
     title: 'Coleção Camisetas',
     subtitle: 'Novas estampas dev',
     href: '/products?cat=camisetas',
-    image: '/banners/card-camisetas.jpg',
+    image: '/banners/card-camisetas.svg',
   },
   {
     id: 'moletons',
     title: 'Moletons',
     subtitle: 'Inverno dev',
     href: '/products?cat=moletons',
-    image: '/banners/card-moletons.jpg',
+    image: '/banners/card-moletons.svg',
   },
   {
     id: 'acessorios',
     title: 'Acessórios',
     subtitle: 'Complete seu setup',
     href: '/products?cat=acessorios',
-    image: '/banners/card-acessorios.jpg',
+    image: '/banners/card-acessorios.svg',
   },
 ]
 

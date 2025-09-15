@@ -97,6 +97,12 @@ export default function ReviewOrder({
             <span>Economia</span>
             <span>{formatCurrency(totals.savings)}</span>
           </div>
+          {totals.savings > 0 && (
+            <p className="text-[10px] text-white/60">
+              Você economizou {formatCurrency(totals.savings)} com a melhor estratégia
+              {totals.discountLabel ? ` (${totals.discountLabel})` : ''}.
+            </p>
+          )}
         </div>
       </div>
       <div className="flex gap-2 pt-2">
