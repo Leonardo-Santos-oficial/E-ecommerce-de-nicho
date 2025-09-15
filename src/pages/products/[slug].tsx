@@ -6,6 +6,7 @@ import { GetStaticPaths, GetStaticProps } from 'next'
 import { loadProducts } from '@/lib/products'
 import { formatCurrency } from '../../utils/format'
 import { useCart } from '../../hooks/useCart'
+import { useEffectiveDiscount } from '../../utils/discount'
 import type { Product as CartProduct } from '../../types/Product'
 import type { Product as AppProduct } from '../../types/Product'
 import ProductGallery from '../../components/product/ProductGallery'
@@ -139,6 +140,8 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
             price={{ current: formattedPrice }}
             shortDescription={product.shortDescription}
           />
+          {/* Preço com desconto (Pix) derivado do hook para consistência */}
+          <DiscountPrice productPrice={product.price} />
           <ProductActions
             onBuyNow={(qty) => {
               addItem({ ...cartProduct, quantity: qty } as any)
@@ -202,6 +205,17 @@ export default function ProductDetail({ product, related }: ProductPageProps) {
 
       <RelatedProducts products={related} onAdd={(p) => addItem(p)} />
     </>
+  )
+}
+
+function DiscountPrice({ productPrice }: { productPrice: number }) {
+  const computed = useEffectiveDiscount(productPrice)
+  if (!computed.savings) return null
+  return (
+    <p className="text-sm text-lime-400 font-semibold">
+      {computed.label}: {formatCurrency(computed.discounted)}{' '}
+      <span className="text-xs text-white">economize {formatCurrency(computed.savings)}</span>
+    </p>
   )
 }
 

@@ -4,7 +4,13 @@ import { formatCurrency } from '@/utils/format'
 
 interface Props {
   items: CartItem[]
-  totals: { subtotal: number; total: number; totalWithDiscount: number; savings: number }
+  totals: {
+    subtotal: number
+    total: number
+    totalWithDiscount: number
+    savings: number
+    discountLabel?: string
+  }
   identification: { nome: string; email: string; cpf: string }
   address: {
     cep: string
@@ -82,7 +88,7 @@ export default function ReviewOrder({
             <span>{formatCurrency(totals.total)}</span>
           </div>
           <div className="flex justify-between">
-            <span>Total Pix</span>
+            <span>{totals.discountLabel || 'À vista (desconto)'}</span>
             <span className="text-lime-400 font-medium">
               {formatCurrency(totals.totalWithDiscount)}
             </span>

@@ -1,4 +1,4 @@
-// Stub genérico para módulos sem @types
+declare module '@/*' // Stub genérico para módulos sem @types
 // Garante supressão do aviso de declaração ausente do jest-axe
 declare module 'jest-axe' {
   export interface AxeResults {

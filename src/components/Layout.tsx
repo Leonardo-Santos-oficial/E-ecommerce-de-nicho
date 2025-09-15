@@ -10,6 +10,7 @@ import {
   FOOTER_POLICIES,
   FOOTER_SOCIALS,
 } from '@/config/navigation'
+import FreeShippingBar from './FreeShippingBar'
 
 export default function Layout({ children }: { children: ReactNode }) {
   const { totalItems } = useCart()
@@ -163,6 +164,7 @@ export default function Layout({ children }: { children: ReactNode }) {
           </nav>
         )}
       </header>
+      <FreeShippingBar />
       <main id="main-content" className="container py-8">
         {children}
       </main>

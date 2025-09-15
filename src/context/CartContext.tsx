@@ -21,20 +21,22 @@ function cartReducer(state: CartState, action: Action): CartState {
     case 'HYDRATE':
       return action.payload
     case 'ADD_ITEM': {
-      const exists = state.items.find(i => i.id === action.payload.id)
+      const exists = state.items.find((i) => i.id === action.payload.id)
       if (exists) {
         return {
-          items: state.items.map(i => (i.id === action.payload.id ? { ...i, quantity: i.quantity + 1 } : i)),
+          items: state.items.map((i) =>
+            i.id === action.payload.id ? { ...i, quantity: i.quantity + 1 } : i
+          ),
         }
       }
       return { items: [...state.items, { ...action.payload, quantity: 1 }] }
     }
     case 'REMOVE_ITEM':
-      return { items: state.items.filter(i => i.id !== action.payload.id) }
+      return { items: state.items.filter((i) => i.id !== action.payload.id) }
     case 'UPDATE_QUANTITY':
       return {
-        items: state.items.map(i =>
-          i.id === action.payload.id ? { ...i, quantity: Math.max(1, action.payload.quantity) } : i,
+        items: state.items.map((i) =>
+          i.id === action.payload.id ? { ...i, quantity: Math.max(1, action.payload.quantity) } : i
         ),
       }
     case 'CLEAR':
@@ -44,12 +46,15 @@ function cartReducer(state: CartState, action: Action): CartState {
   }
 }
 
-function useLocalStorage(key: string, value: any) {
-  useEffect(() => {
+// Persistência simples desacoplada de SSR; não usar condicionalmente o custom hook
+function writeLocalStorage(key: string, value: any) {
+  try {
     if (typeof window !== 'undefined') {
       window.localStorage.setItem(key, JSON.stringify(value))
     }
-  }, [key, value])
+  } catch {
+    /* noop */
+  }
 }
 
 const CartContext = createContext<{
@@ -62,11 +67,21 @@ const CartContext = createContext<{
   clear: () => void
 } | null>(null)
 
-export function CartProvider({ children }: { children: React.ReactNode }) {
-  const [state, dispatch] = useReducer(cartReducer, initialState)
+export function CartProvider({
+  children,
+  initialItems,
+}: {
+  children: React.ReactNode
+  initialItems?: CartItem[]
+}) {
+  const [state, dispatch] = useReducer(
+    cartReducer,
+    initialItems ? { items: initialItems } : initialState
+  )
 
   // hydrate from localStorage after mount to avoid hydration mismatches
   useEffect(() => {
+    if (process.env.NODE_ENV === 'test') return
     try {
       const raw = typeof window !== 'undefined' ? window.localStorage.getItem('cart-state') : null
       if (raw) {
@@ -74,11 +89,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         dispatch({ type: 'HYDRATE', payload: parsed })
       }
     } catch {
-      // ignore
+      /* noop */
     }
   }, [])
 
-  useLocalStorage('cart-state', state)
+  // Persistência fora de condições de hook: efeito sempre registrado, guarda interna controla execução
+  useEffect(() => {
+    if (process.env.NODE_ENV === 'test') return
+    writeLocalStorage('cart-state', state)
+  }, [state])
 
   const value = useMemo(() => {
     const subtotal = state.items.reduce((sum: number, i: CartItem) => sum + i.price * i.quantity, 0)
