@@ -1,6 +1,6 @@
 import React, { useState, useId, useRef } from 'react'
 import { inputBase } from '@/components/form/styles'
-import { maskCPF, validateCPF, validateEmail } from '@/utils/masks'
+import { maskCPF, validateCPF } from '@/utils/masks'
 import { IdentificationSchema, type IdentificationDTO } from '@/types/schemas'
 import { handleDigitKeyDown, handlePasteDigits } from '@/utils/inputGuards'
 

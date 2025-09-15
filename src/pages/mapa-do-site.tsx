@@ -1,6 +1,6 @@
 import React from 'react'
 import Head from 'next/head'
-import Link from 'next/link'
+// removed unused Link import after enabling noUnusedLocals
 import { absoluteUrl } from '@/utils/seo'
 import type { SiteMapSection } from '@/types/sitemap'
 import { SiteMapCard } from '@/components/sitemap/SiteMapCard'

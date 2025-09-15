@@ -13,7 +13,7 @@ describe('Coupon Discount Strategy', () => {
   it('applies coupon when present and better than Pix', () => {
     const strat = new CompositeDiscountStrategy([
       new PixDiscountStrategy(5),
-      new PercentageCouponDiscountStrategy('SAVE10', 10),
+      new PercentageCouponDiscountStrategy('SAVE10'),
     ])
     const result = strat.compute(ctx(100, 10, 'SAVE10'))
     expect(result.discountedTotal).toBe(90)
@@ -24,7 +24,7 @@ describe('Coupon Discount Strategy', () => {
   it('keeps Pix when coupon is worse', () => {
     const strat = new CompositeDiscountStrategy([
       new PixDiscountStrategy(5),
-      new PercentageCouponDiscountStrategy('C3', 3),
+      new PercentageCouponDiscountStrategy('C3'),
     ])
     const result = strat.compute(ctx(100, 3, 'C3'))
     expect(result.discountedTotal).toBe(95)
@@ -35,7 +35,7 @@ describe('Coupon Discount Strategy', () => {
   it('returns subtotal if no strategy applies', () => {
     const strat = new CompositeDiscountStrategy([
       new PixDiscountStrategy(5),
-      new PercentageCouponDiscountStrategy('X', 0),
+      new PercentageCouponDiscountStrategy('X'),
     ])
     const result = strat.compute(ctx(0, 0, 'X'))
     expect(result.discountedTotal).toBe(0)

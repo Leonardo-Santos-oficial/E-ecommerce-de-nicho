@@ -34,7 +34,7 @@ export default function CheckoutPage() {
   const [guardMessage, setGuardMessage] = useState('')
   const [orderPlaced, setOrderPlaced] = useState(false)
 
-  const go = useCallback((s: CheckoutStep) => setStep(s), [])
+  // removed unused helper 'go' after enabling noUnusedLocals
 
   const totals: OrderTotals = { subtotal, total, totalWithDiscount, savings }
 

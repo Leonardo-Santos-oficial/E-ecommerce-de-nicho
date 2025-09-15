@@ -4,10 +4,9 @@ import { CartProvider, CartItem } from '@/context/CartContext'
 
 interface Options {
   items?: CartItem[]
-  coupon?: { code: string; percent: number }
 }
 
-export function renderWithCart(ui: React.ReactElement, { items = [], coupon }: Options = {}) {
+export function renderWithCart(ui: React.ReactElement, { items = [] }: Options = {}) {
   // Se houver cupom, aplicamos via provider pós-montagem usando um wrapper
   const Wrapper: React.FC<{ children: React.ReactNode }> = ({ children }) => {
     return <CartProvider initialItems={items}>{children}</CartProvider>

@@ -1,4 +1,4 @@
-import Link from 'next/link'
+// removed unused Link import after enabling noUnusedLocals
 import Head from 'next/head'
 import { absoluteUrl } from '../utils/seo'
 import { Product } from '../types/Product'

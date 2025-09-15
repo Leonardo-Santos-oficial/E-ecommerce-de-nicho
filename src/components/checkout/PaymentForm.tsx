@@ -11,7 +11,7 @@ import {
 } from '@/utils/masks'
 import { CardSchema } from '@/types/schemas'
 import { formatCurrency } from '@/utils/format'
-import { handleDigitKeyDown, handlePasteDigits, sanitizeDigits } from '@/utils/inputGuards'
+import { handleDigitKeyDown, handlePasteDigits } from '@/utils/inputGuards'
 
 interface Props {
   total: MoneyBRL | number

@@ -1,0 +1,11 @@
+# Modern browsers only – reduces unnecessary polyfills
+# Strategy: last 2 versions of evergreen browsers + explicit no legacy IE/Opera Mini
+last 2 Chrome versions
+last 2 Firefox versions
+last 2 Safari versions
+last 2 Edge versions
+# iOS Safari query fix (use ios_saf alias)
+last 2 iOS versions
+not IE 11
+not dead
+not op_mini all
