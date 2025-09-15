@@ -1,5 +1,7 @@
 export interface DiscountContext {
   subtotal: number
+  couponPercent?: number | null
+  couponCode?: string | null
 }
 
 export interface DiscountResult {
@@ -47,4 +49,35 @@ export class CompositeDiscountStrategy implements DiscountStrategy {
 
 export function buildDefaultDiscountStrategy() {
   return new CompositeDiscountStrategy([new PixDiscountStrategy(5)])
+}
+
+// Strategy de cupom percentual genérica (aberta para diferentes percentuais)
+export class PercentageCouponDiscountStrategy implements DiscountStrategy {
+  constructor(
+    private readonly code: string,
+    private readonly percent: number
+  ) {}
+  applies(ctx: DiscountContext): boolean {
+    return !!ctx.couponPercent && ctx.couponPercent > 0 && ctx.subtotal > 0
+  }
+  compute(ctx: DiscountContext): DiscountResult {
+    const p = Math.max(0, Math.min(100, ctx.couponPercent || 0)) / 100
+    const total = ctx.subtotal
+    const discountedTotal = Math.round(total * (1 - p) * 100) / 100
+    const savings = Math.round((total - discountedTotal) * 100) / 100
+    return {
+      total,
+      discountedTotal,
+      savings,
+      label: `${ctx.couponPercent}% Cupom ${ctx.couponCode || this.code}`.trim(),
+    }
+  }
+}
+
+export function buildDiscountStrategyWithCoupon(coupon?: { code: string; percent: number } | null) {
+  const strategies: DiscountStrategy[] = [new PixDiscountStrategy(5)]
+  if (coupon?.percent) {
+    strategies.push(new PercentageCouponDiscountStrategy(coupon.code, coupon.percent))
+  }
+  return new CompositeDiscountStrategy(strategies)
 }

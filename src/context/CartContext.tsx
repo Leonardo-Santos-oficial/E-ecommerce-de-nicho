@@ -5,9 +5,13 @@ export type CartItem = Product & { quantity: number }
 
 type CartState = {
   items: CartItem[]
+  coupon?: {
+    code: string
+    percent: number
+  } | null
 }
 
-const initialState: CartState = { items: [] }
+const initialState: CartState = { items: [], coupon: null }
 
 type Action =
   | { type: 'ADD_ITEM'; payload: Product }
@@ -15,6 +19,8 @@ type Action =
   | { type: 'UPDATE_QUANTITY'; payload: { id: string; quantity: number } }
   | { type: 'HYDRATE'; payload: CartState }
   | { type: 'CLEAR' }
+  | { type: 'APPLY_COUPON'; payload: { code: string; percent: number } }
+  | { type: 'CLEAR_COUPON' }
 
 function cartReducer(state: CartState, action: Action): CartState {
   switch (action.type) {
@@ -40,7 +46,11 @@ function cartReducer(state: CartState, action: Action): CartState {
         ),
       }
     case 'CLEAR':
-      return { items: [] }
+      return { items: [], coupon: null }
+    case 'APPLY_COUPON':
+      return { ...state, coupon: { code: action.payload.code, percent: action.payload.percent } }
+    case 'CLEAR_COUPON':
+      return { ...state, coupon: null }
     default:
       return state
   }
@@ -61,10 +71,13 @@ const CartContext = createContext<{
   items: CartItem[]
   totalItems: number
   subtotal: number
+  coupon: CartState['coupon']
   addItem: (product: Product) => void
   removeItem: (id: string) => void
   updateQuantity: (id: string, quantity: number) => void
   clear: () => void
+  applyCoupon: (code: string, percent: number) => void
+  clearCoupon: () => void
 } | null>(null)
 
 export function CartProvider({
@@ -106,11 +119,15 @@ export function CartProvider({
       items: state.items,
       subtotal,
       totalItems,
+      coupon: state.coupon,
       addItem: (product: Product) => dispatch({ type: 'ADD_ITEM', payload: product }),
       removeItem: (id: string) => dispatch({ type: 'REMOVE_ITEM', payload: { id } }),
       updateQuantity: (id: string, quantity: number) =>
         dispatch({ type: 'UPDATE_QUANTITY', payload: { id, quantity } }),
       clear: () => dispatch({ type: 'CLEAR' }),
+      applyCoupon: (code: string, percent: number) =>
+        dispatch({ type: 'APPLY_COUPON', payload: { code, percent } }),
+      clearCoupon: () => dispatch({ type: 'CLEAR_COUPON' }),
     }
   }, [state])
 

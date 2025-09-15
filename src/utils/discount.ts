@@ -15,8 +15,10 @@ export function computeDefaultDiscount(price: number, percent = 5) {
  */
 export function useEffectiveDiscount(price: number) {
   const { totalWithDiscount, savings, discountLabel } = useCart()
-  if (savings > 0 || (totalWithDiscount !== 0 && totalWithDiscount !== price)) {
+  // Se o carrinho já tem uma estratégia vencedora (Pix ou Cupom), retornamos essa
+  if (savings > 0 && discountLabel) {
     return { discounted: totalWithDiscount, savings, label: discountLabel }
   }
+  // Fallback: cálculo isolado (Pix default)
   return computeDefaultDiscount(price)
 }
