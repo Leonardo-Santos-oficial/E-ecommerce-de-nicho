@@ -1,4 +1,4 @@
-import { useState, useCallback, useEffect } from 'react'
+import React, { useState, useCallback, useEffect } from 'react'
 import CheckoutSteps, { CheckoutStep } from '@/components/checkout/CheckoutSteps'
 import IdentificationForm from '@/components/checkout/IdentificationForm'
 import AddressForm from '@/components/checkout/AddressForm'
@@ -13,7 +13,8 @@ import { toDomainIdentification, toDomainAddress } from '@/types/mappers'
 
 export default function CheckoutPage() {
   const router = useRouter()
-  const { cartItems, subtotal, total, totalWithDiscount, savings, clearCart } = useCart()
+  const { cartItems, subtotal, total, totalWithDiscount, savings, discountLabel, clearCart } =
+    useCart()
   const [step, setStep] = useState<CheckoutStep>('identificacao')
   const [identificacao, setIdentificacao] = useState<Identification>({
     nome: '',
@@ -224,7 +225,7 @@ export default function CheckoutPage() {
                   </span>
                 </li>
                 <li className="flex justify-between">
-                  <span>Total Pix</span>
+                  <span>{discountLabel || 'À vista (desconto)'}</span>
                   <span className="text-lime-400">
                     {totalWithDiscount.toLocaleString('pt-BR', {
                       style: 'currency',
@@ -233,7 +234,7 @@ export default function CheckoutPage() {
                   </span>
                 </li>
                 <li className="flex justify-between text-xs text-white">
-                  <span>Economia</span>
+                  <span>Você economiza</span>
                   <span>
                     {savings.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })}
                   </span>

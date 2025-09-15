@@ -1,5 +1,5 @@
+import React, { useMemo, useState } from 'react'
 import Image from 'next/image'
-import { useMemo, useState } from 'react'
 
 export type FBTItem = {
   id: string

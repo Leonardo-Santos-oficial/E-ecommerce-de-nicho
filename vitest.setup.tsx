@@ -1,6 +1,7 @@
 import '@testing-library/jest-dom'
 import { toHaveNoViolations } from 'jest-axe'
 import { expect, vi } from 'vitest'
+import React from 'react'
 
 // Registrar matcher de acessibilidade uma única vez
 // @ts-ignore - assinatura simplificada
@@ -23,4 +24,17 @@ vi.mock('next/router', () => {
       isFallback: false,
     }),
   }
+})
+
+// Mock next/link preservando semântica de acessibilidade (<a>) mas sem prefetch
+vi.mock('next/link', () => {
+  const Link = ({ href, children, legacyBehavior, ...rest }: any) => {
+    const resolvedHref = typeof href === 'string' ? href : href?.pathname || '#'
+    return (
+      <a href={resolvedHref} {...rest} data-test-link-mock>
+        {children}
+      </a>
+    )
+  }
+  return { __esModule: true, default: Link }
 })

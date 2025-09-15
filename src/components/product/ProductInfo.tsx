@@ -1,3 +1,4 @@
+import React from 'react'
 type Props = {
   name: string
   rating: { value: number; count: number }

@@ -1,4 +1,4 @@
-import { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo } from 'react'
 import Head from 'next/head'
 import Link from 'next/link'
 import { absoluteUrl } from '../../utils/seo'

@@ -1,3 +1,4 @@
+import React from 'react'
 import Image from 'next/image'
 import Link from 'next/link'
 
@@ -13,5 +14,11 @@ export default function HorizontalBanner({ src, alt, href }: Props) {
       <Image src={src} alt={alt} fill sizes="100vw" className="object-cover" />
     </div>
   )
-  return href ? <Link href={href} aria-label={alt}>{content}</Link> : content
+  return href ? (
+    <Link href={href} aria-label={alt}>
+      {content}
+    </Link>
+  ) : (
+    content
+  )
 }
