@@ -10,51 +10,48 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 18
           cache: npm
+
       - name: Install deps
         run: npm ci
+
       - name: Build
         run: npm run build
+
       - name: Run perf budget (JSON)
         run: PERF_OUTPUT_JSON=1 PERF_WARN_ONLY=1 node scripts/perfBudget.mjs
-      - name: Extract metric
-        id: perf
+
+      - name: Collect metrics
+        id: metrics
         run: |
-          VALUE=$(node -e "const r=require('fs').readFileSync('.next/perf-budget.json','utf-8');const j=JSON.parse(r);process.stdout.write(String(j.firstLoadKB))")
-          echo "firstLoadKB=$VALUE" >> $GITHUB_OUTPUT
-      - name: Load baseline
-        id: base
-        run: |
-          BASE=$(node -e "const j=require('./perf-baseline.json');process.stdout.write(String(j.firstLoadKB))")
+          FIRST=$(node -e "const j=require('fs').readFileSync('.next/perf-budget.json','utf8');process.stdout.write(JSON.parse(j).firstLoadKB)")
+          BASE=$(node -e "process.stdout.write(require('./perf-baseline.json').firstLoadKB.toString())")
+          DIFF=$(node -e "const c=parseFloat(process.env.FIRST);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write((d>0?'+':'')+d+' kB ('+p+'%)')" FIRST="$FIRST" BASE="$BASE")
+          echo "first=$FIRST" >> $GITHUB_OUTPUT
           echo "baseline=$BASE" >> $GITHUB_OUTPUT
-      - name: Compute diff markdown
-        id: diff
-        run: |
-          CUR='${{ steps.perf.outputs.firstLoadKB }}'
-          BASE='${{ steps.base.outputs.baseline }}'
-          DIFF=$(node -e "const c=parseFloat(process.env.CUR);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write((d>0?'+':'')+d+' kB ('+p+'%)')" CUR="$CUR" BASE="$BASE")
-          echo "diff=$DIFF" >> "$GITHUB_OUTPUT"
-      - name: Prepare comment body
+          echo "diff=$DIFF" >> $GITHUB_OUTPUT
+
+      - name: Prepare body
         id: body
         run: |
-          CUR=${{ steps.perf.outputs.firstLoadKB }}
-          BASE=${{ steps.base.outputs.baseline }}
-          DIFF=${{ steps.diff.outputs.diff }}
-          printf "body<<EOF\n### 📊 Performance Budget\nFirst Load JS: **%s kB** (baseline %s kB)\nDiff: %s\n\nBaseline file: \`perf-baseline.json\`\n> Atualize a baseline apenas quando iniciar nova fase de redução.\nEOF\n" "$CUR" "$BASE" "$DIFF" >> "$GITHUB_OUTPUT"
+          printf "body<<EOF\n### 📊 Performance Budget\nFirst Load JS: **%s kB** (baseline %s kB)\nDiff: %s\n\nBaseline file: \`perf-baseline.json\`\n> Update the baseline only when starting a new reduction phase.\nEOF\n" "${{ steps.metrics.outputs.first }}" "${{ steps.metrics.outputs.baseline }}" "${{ steps.metrics.outputs.diff }}" >> $GITHUB_OUTPUT
+
       - name: Find existing comment
-        id: find-comment
+        id: find
         uses: peter-evans/find-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: "### 📊 Performance Budget"
-      - name: Create or update comment
+
+      - name: Create / Update comment
         uses: peter-evans/create-or-update-comment@v4
         with:
-          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          comment-id: ${{ steps.find.outputs.comment-id }}
           issue-number: ${{ github.event.pull_request.number }}
           body: ${{ steps.body.outputs.body }}
           edit-mode: replace
