@@ -1,0 +1,57 @@
+name: performance-comment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  perf-budget-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+
+      - name: Install deps
+        run: npm ci
+
+      - name: Build
+        run: npm run build
+
+      - name: Run perf budget (JSON)
+        run: PERF_OUTPUT_JSON=1 PERF_WARN_ONLY=1 node scripts/perfBudget.mjs
+
+      - name: Collect metrics
+        id: metrics
+        run: |
+          FIRST=$(node -e "const j=require('fs').readFileSync('.next/perf-budget.json','utf8');process.stdout.write(JSON.parse(j).firstLoadKB)")
+          BASE=$(node -e "process.stdout.write(require('./perf-baseline.json').firstLoadKB.toString())")
+          DIFF=$(node -e "const c=parseFloat(process.env.FIRST);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write((d>0?'+':'')+d+' kB ('+p+'%)')" FIRST="$FIRST" BASE="$BASE")
+          echo "first=$FIRST" >> $GITHUB_OUTPUT
+          echo "baseline=$BASE" >> $GITHUB_OUTPUT
+          echo "diff=$DIFF" >> $GITHUB_OUTPUT
+
+      - name: Prepare body
+        id: body
+        run: |
+          printf "body<<EOF\n### 📊 Performance Budget\nFirst Load JS: **%s kB** (baseline %s kB)\nDiff: %s\n\nBaseline file: \`perf-baseline.json\`\n> Update the baseline only when starting a new reduction phase.\nEOF\n" "${{ steps.metrics.outputs.first }}" "${{ steps.metrics.outputs.baseline }}" "${{ steps.metrics.outputs.diff }}" >> $GITHUB_OUTPUT
+
+      - name: Find existing comment
+        id: find
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: "### 📊 Performance Budget"
+
+      - name: Create / Update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.body.outputs.body }}
+          edit-mode: replace

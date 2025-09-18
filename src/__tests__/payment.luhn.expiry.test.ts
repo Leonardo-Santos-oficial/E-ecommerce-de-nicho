@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from 'vitest'
+import { describe, it, expect } from 'vitest'
 import { validateCardLuhn, validateExpiryNotPast } from '@/utils/masks'
 
 // Common PANs for testing: Visa 4111111111111111 (passes Luhn)

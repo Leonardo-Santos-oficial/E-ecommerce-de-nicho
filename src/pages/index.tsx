@@ -7,14 +7,15 @@ import { GetStaticProps } from 'next'
 import { loadProducts, type LoadedProductRaw } from '@/lib/products'
 import dynamic from 'next/dynamic'
 import Section from '@/components/home/Section'
-import ProductsRow from '@/components/home/ProductsRow'
-import ProductTags from '@/components/home/ProductTags'
-import CategoryCards from '@/components/home/CategoryCards'
-import PromoBannerCards from '@/components/home/PromoBannerCards'
-import BenefitsBar from '@/components/home/BenefitsBar'
-import Countdown from '@/components/home/Countdown'
-import NewsletterSignup from '@/components/home/NewsletterSignup'
-import TrustBadges from '@/components/home/TrustBadges'
+// Dynamic imports for non-critical below-the-fold sections (performance: smaller initial bundle)
+const ProductsRow = dynamic(() => import('@/components/home/ProductsRow'))
+const ProductTags = dynamic(() => import('@/components/home/ProductTags'))
+const CategoryCards = dynamic(() => import('@/components/home/CategoryCards'))
+const PromoBannerCards = dynamic(() => import('@/components/home/PromoBannerCards'))
+const BenefitsBar = dynamic(() => import('@/components/home/BenefitsBar'))
+const Countdown = dynamic(() => import('@/components/home/Countdown'))
+const NewsletterSignup = dynamic(() => import('@/components/home/NewsletterSignup'))
+const TrustBadges = dynamic(() => import('@/components/home/TrustBadges'))
 import useRecentlyViewed from '@/hooks/useRecentlyViewed'
 const HeroCarousel = dynamic(() => import('@/components/home/HeroCarousel'), { ssr: false })
 const BrandsStrip = dynamic(() => import('@/components/home/BrandsStrip'), { ssr: false })
