@@ -29,8 +29,8 @@ jobs:
       - name: Collect metrics
         id: metrics
         run: |
-          FIRST=$(node -e "const j=require('fs').readFileSync('.next/perf-budget.json','utf8');process.stdout.write(JSON.parse(j).firstLoadKB)")
-          BASE=$(node -e "process.stdout.write(require('./perf-baseline.json').firstLoadKB.toString())")
+          FIRST=$(node -e "const j=require('fs').readFileSync('.next/perf-budget.json','utf8');process.stdout.write(String(JSON.parse(j).firstLoadKB))")
+          BASE=$(node -e "process.stdout.write(String(require('./perf-baseline.json').firstLoadKB))")
           DIFF=$(node -e "const c=parseFloat(process.env.FIRST);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write((d>0?'+':'')+d+' kB ('+p+'%)')" FIRST="$FIRST" BASE="$BASE")
           echo "first=$FIRST" >> $GITHUB_OUTPUT
           echo "baseline=$BASE" >> $GITHUB_OUTPUT
