@@ -20,6 +20,7 @@ DevWear é um e-commerce de nicho para vestuário e acessórios dev. Foco em SEO
 ➡️ Link do executável (preview): https://e-ecommerce-de-nicho-mj4r5ih4m-leonardos-projects-587ac08e.vercel.app/
 
 Principais pilares:
+
 - SEO forte (meta + JSON-LD de Organization, SiteNavigationElement e Product)
 - Acessibilidade: rotas, formulários com aria-live, foco visível, skip link
 - Renderização híbrida (SSG/ISR + CSR onde faz sentido)
@@ -44,9 +45,11 @@ npm start
 ```
 
 Variáveis de ambiente (SEO / URLs absolutas):
+
 ```
 NEXT_PUBLIC_SITE_URL=https://seu-dominio.com
 ```
+
 Coloque em `.env.local`.
 
 ## Features
@@ -67,6 +70,23 @@ Coloque em `.env.local`.
 - Context API + useReducer
 - Vitest, @testing-library/react, jsdom, jest-dom
 
+## Performance & Observabilidade
+
+Ferramentas e abordagens adotadas para garantir carregamento rápido e evitar regressões:
+
+- Bundle Analyzer opcional (`ANALYZE=1 npm run build`) via `@next/bundle-analyzer` – OCP: extensão sem modificar config base.
+- Script de verificação de orçamento de performance: `npm run perf:budget` (SRP: um único propósito – analisar tamanhos). Ajustável via variáveis de ambiente.
+- `npm run typecheck` (feedback rápido CI sem emitir artefatos) – Clean Code: falha cedo.
+- Imports dinâmicos para seções não críticas (ex: listas de produtos, banners) diminuem JS inicial e melhoram LCP.
+- Browserslist moderna reduz polyfills (ISP: dependemos de interface menor de runtime).
+
+Orçamento inicial (scripts/perfBudget.mjs):
+
+- First Load JS: 130 kB
+- Page chunk: 80 kB
+
+Relatórios falham o CI caso o limite seja excedido (DIP: limites via env em vez de alterar código).
+
 ## Estrutura e arquitetura
 
 - `src/pages` — páginas com SSG/ISR e rotas
@@ -77,6 +97,7 @@ Coloque em `.env.local`.
 - `src/utils/format.ts` — formatação de moeda
 
 ## Rotas principais
+
 - `/` Home (SSG)
 - `/products` Lista de produtos (SSG + ISR, filtros client-side)
 - `/products/[slug]` Produto (SSG + getStaticPaths + JSON-LD Product)
@@ -101,7 +122,7 @@ Host: localhost:3000
 
 ```json
 {
-	"ok": true
+  "ok": true
 }
 ```
 
@@ -113,8 +134,8 @@ Não implementado; sugerido para futura integração com gateway de frete.
 
 ```json
 {
-	"zip": "01001-000",
-	"items": [ { "sku": "tee-001", "qty": 2, "weight": 0.3 } ]
+  "zip": "01001-000",
+  "items": [{ "sku": "tee-001", "qty": 2, "weight": 0.3 }]
 }
 ```
 
@@ -122,9 +143,9 @@ Não implementado; sugerido para futura integração com gateway de frete.
 
 ```json
 {
-	"service": "PAC",
-	"price": 19.9,
-	"etaBusinessDays": "5-9"
+  "service": "PAC",
+  "price": 19.9,
+  "etaBusinessDays": "5-9"
 }
 ```
 
@@ -142,9 +163,9 @@ Não implementado; sugerido para aplicar regras de preço e retornar descontos.
 
 ```json
 {
-	"valid": true,
-	"discountType": "percent",
-	"amount": 10
+  "valid": true,
+  "discountType": "percent",
+  "amount": 10
 }
 ```
 
@@ -155,6 +176,7 @@ npm run test
 ```
 
 Cobertura atual:
+
 - `payments.test.ts` — valida `computeInstallment`
 - `orderSummary.aria.test.tsx` — checa ARIA e badge de economia no `OrderSummary`
 
