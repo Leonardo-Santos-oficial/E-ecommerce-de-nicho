@@ -3,6 +3,7 @@ name: performance-comment
 on:
   pull_request:
     types: [opened, synchronize, reopened]
+  workflow_dispatch:
 
 jobs:
   perf-budget-diff:
@@ -25,7 +26,6 @@ jobs:
 
       - name: Run perf budget (JSON)
         run: PERF_OUTPUT_JSON=1 PERF_WARN_ONLY=1 node scripts/perfBudget.mjs
-
       - name: Collect metrics
         id: metrics
         run: |
