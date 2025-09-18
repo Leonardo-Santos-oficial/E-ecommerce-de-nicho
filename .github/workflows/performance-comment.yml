@@ -39,6 +39,8 @@ jobs:
           echo "baseline=$BASE" >> $GITHUB_OUTPUT
           echo "diff=$DIFF" >> $GITHUB_OUTPUT
 
+      # Comment operations only make sense on PR events; push events build & compute but skip commenting to avoid 404.
+
       - name: Prepare body
         id: body
         run: |
@@ -46,12 +48,14 @@ jobs:
 
       - name: Find existing comment
         id: find
+        if: github.event_name == 'pull_request'
         uses: peter-evans/find-comment@v3
         with:
           issue-number: ${{ github.event.pull_request.number }}
           body-includes: "### 📊 Performance Budget"
 
       - name: Create / Update comment
+        if: github.event_name == 'pull_request'
         uses: peter-evans/create-or-update-comment@v4
         with:
           comment-id: ${{ steps.find.outputs.comment-id }}
