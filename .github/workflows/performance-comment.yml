@@ -34,8 +34,8 @@ jobs:
       - name: Compute diff markdown
         id: diff
         run: |
-          CUR=${{ steps.perf.outputs.firstLoadKB }}
-          BASE=${{ steps.base.outputs.baseline }}
+          CUR='${{ steps.perf.outputs.firstLoadKB }}'
+          BASE='${{ steps.base.outputs.baseline }}'
           DIFF=$(node -e "const c=parseFloat(process.env.CUR);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write((d>0?'+':'')+d+' kB ('+p+'%)')" CUR="$CUR" BASE="$BASE")
           echo "diff=$DIFF" >> "$GITHUB_OUTPUT"
       - name: Prepare comment body
@@ -44,16 +44,7 @@ jobs:
           CUR=${{ steps.perf.outputs.firstLoadKB }}
           BASE=${{ steps.base.outputs.baseline }}
           DIFF=${{ steps.diff.outputs.diff }}
-          {
-            echo 'body<<EOF'
-            echo '### 📊 Performance Budget'
-            echo "First Load JS: **$CUR kB** (baseline $BASE kB)"
-            echo "Diff: $DIFF"
-            echo ''
-            echo 'Baseline file: `perf-baseline.json`'
-            echo '> Atualize a baseline apenas quando iniciar nova fase de redução.'
-            echo 'EOF'
-          } >> "$GITHUB_OUTPUT"
+          printf "body<<EOF\n### 📊 Performance Budget\nFirst Load JS: **%s kB** (baseline %s kB)\nDiff: %s\n\nBaseline file: \`perf-baseline.json\`\n> Atualize a baseline apenas quando iniciar nova fase de redução.\nEOF\n" "$CUR" "$BASE" "$DIFF" >> "$GITHUB_OUTPUT"
       - name: Find existing comment
         id: find-comment
         uses: peter-evans/find-comment@v3
