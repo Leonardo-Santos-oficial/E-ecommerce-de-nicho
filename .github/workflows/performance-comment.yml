@@ -4,6 +4,9 @@ on:
   pull_request:
     types: [opened, synchronize, reopened]
   workflow_dispatch:
+  push:
+    branches:
+      - feat/perf-budget-refactor
 
 jobs:
   perf-budget-diff:
