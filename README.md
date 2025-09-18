@@ -80,12 +80,33 @@ Ferramentas e abordagens adotadas para garantir carregamento rápido e evitar re
 - Imports dinâmicos para seções não críticas (ex: listas de produtos, banners) diminuem JS inicial e melhoram LCP.
 - Browserslist moderna reduz polyfills (ISP: dependemos de interface menor de runtime).
 
-Orçamento inicial (scripts/perfBudget.mjs):
+Orçamento e baseline:
 
-- First Load JS: 130 kB
-- Page chunk: 80 kB
+- Baseline versionada em `perf-baseline.json` (First Load JS inicial ~274 kB — fase 0).
+- Budget temporário configurado: 300 kB (apenas warn) para permitir observação inicial.
+- Redução progressiva planejada: 300 ➝ 260 ➝ 220 ➝ 190 ➝ 170 kB.
+- Page chunk alvo permanece 80 kB (ainda não aplicado como gate estrito).
 
-Relatórios falham o CI caso o limite seja excedido (DIP: limites via env em vez de alterar código).
+Workflow de comentários:
+
+- `performance-comment.yml` comenta em cada PR o First Load medido vs baseline.
+- Atualizar a baseline somente ao iniciar nova fase de redução (commit explícito).
+- Futuro: adicionar métricas CSS/imagens/hydration heurística.
+
+Uso do script:
+
+```powershell
+npm run build
+PERF_OUTPUT_JSON=1 node scripts/perfBudget.mjs
+```
+
+Flags úteis:
+
+- `PERF_FIRST_LOAD_KB=260` força budget custom.
+- `PERF_WRITE_BASELINE=1` cria nova baseline (evitar em PRs normais).
+- `PERF_WARN_ONLY=1` evita falha de CI (modo observação).
+
+Relatórios falham o CI quando acima do budget e `PERF_WARN_ONLY` não está definido (DIP: limites via env em vez de alterar código).
 
 ## Estrutura e arquitetura
 

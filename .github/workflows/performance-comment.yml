@@ -1,0 +1,72 @@
+name: performance-comment
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  perf-budget-diff:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 18
+          cache: npm
+      - name: Install deps
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Run perf budget (JSON)
+        run: PERF_OUTPUT_JSON=1 PERF_WARN_ONLY=1 node scripts/perfBudget.mjs
+      - name: Extract metric
+        id: perf
+        run: |
+          VALUE=$(node -e "const r=require('fs').readFileSync('.next/perf-budget.json','utf-8');const j=JSON.parse(r);process.stdout.write(String(j.firstLoadKB))")
+          echo "firstLoadKB=$VALUE" >> $GITHUB_OUTPUT
+      - name: Load baseline
+        id: base
+        run: |
+          BASE=$(node -e "const j=require('./perf-baseline.json');process.stdout.write(String(j.firstLoadKB))")
+          echo "baseline=$BASE" >> $GITHUB_OUTPUT
+      - name: Compute diff markdown
+        id: diff
+        run: |
+          CUR=${{ steps.perf.outputs.firstLoadKB }}
+          BASE=${{ steps.base.outputs.baseline }}
+          DIFF=$(node -e "const c=parseFloat(process.env.CUR);const b=parseFloat(process.env.BASE);const d=(c-b).toFixed(2);const p=b?(((c-b)/b)*100).toFixed(2):'0.00';process.stdout.write( (d>0?'+':'')+d+' kB ('+p+'%)')" CUR=$CUR BASE=$BASE)
+          echo "diff=$DIFF" >> $GITHUB_OUTPUT
+      - name: Prepare comment body
+        id: body
+        run: |
+          CUR=${{ steps.perf.outputs.firstLoadKB }}
+          BASE=${{ steps.base.outputs.baseline }}
+          DIFF=${{ steps.diff.outputs.diff }}
+          {
+            echo 'PERFORMANCE_REPORT<<EOF'
+            echo '### 📊 Performance Budget'
+            echo "First Load JS: **$CUR kB** (baseline $BASE kB)"
+            echo "Diff: $DIFF"
+            echo ''
+            echo 'Baseline file: `perf-baseline.json`'
+            echo '> Atualize a baseline apenas quando iniciar nova fase de redução.'
+            echo 'EOF'
+          } >> $GITHUB_ENV
+          # Also expose as step output
+          VALUE=$(grep -A20 '^PERFORMANCE_REPORT<<EOF' $GITHUB_ENV | sed -n '/^PERFORMANCE_REPORT<<EOF/{:a;n;/^EOF/!p; /^EOF/q}')
+          printf "body<<EOF\n%s\nEOF\n" "$VALUE" >> $GITHUB_OUTPUT
+      - name: Find existing comment
+        id: find-comment
+        uses: peter-evans/find-comment@v3
+        with:
+          issue-number: ${{ github.event.pull_request.number }}
+          body-includes: "### 📊 Performance Budget"
+      - name: Create or update comment
+        uses: peter-evans/create-or-update-comment@v4
+        with:
+          comment-id: ${{ steps.find-comment.outputs.comment-id }}
+          issue-number: ${{ github.event.pull_request.number }}
+          body: ${{ steps.body.outputs.body }}
+          edit-mode: replace
